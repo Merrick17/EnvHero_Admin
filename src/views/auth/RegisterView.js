@@ -14,6 +14,8 @@ import {
   makeStyles
 } from '@material-ui/core';
 import Page from 'src/components/Page';
+import { useDispatch } from 'react-redux';
+import { register } from '../../actions/auth.actions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,12 +29,10 @@ const useStyles = makeStyles((theme) => ({
 const RegisterView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const dispatcher = useDispatch();
 
   return (
-    <Page
-      className={classes.root}
-      title="Register"
-    >
+    <Page className={classes.root} title="Register">
       <Box
         display="flex"
         flexDirection="column"
@@ -46,20 +46,46 @@ const RegisterView = () => {
               firstName: '',
               lastName: '',
               password: '',
+              phone: '',
               policy: false
             }}
-            validationSchema={
-              Yup.object().shape({
-                email: Yup.string().email('Email non valide').max(255).required('Veuillez saisir un email '),
-                firstName: Yup.string().max(255).required('Veuillez saisir votre prénom '),
-                lastName: Yup.string().max(255).required('Veuillez saisir votre nom'),
-                password: Yup.string().max(255).required('Veuillez saisir un mot de passe '),
-                policy: Yup.boolean().oneOf([true], 'Vous devez accepter les termes at conditions'),
-                phone:Yup.string().required('Veuillez saisir votre téléphone')
-              })
-            }
-            onSubmit={() => {
-              navigate('/app', { replace: true });
+            validationSchema={Yup.object().shape({
+              email: Yup.string()
+                .email('Email non valide')
+                .max(255)
+                .required('Veuillez saisir un email '),
+              firstName: Yup.string()
+                .max(255)
+                .required('Veuillez saisir votre prénom '),
+              lastName: Yup.string()
+                .max(255)
+                .required('Veuillez saisir votre nom'),
+              password: Yup.string()
+                .max(255)
+                .required('Veuillez saisir un mot de passe '),
+              policy: Yup.boolean().oneOf(
+                [true],
+                'Vous devez accepter les termes at conditions'
+              ),
+              phone: Yup.string().required('Veuillez saisir votre téléphone')
+            })}
+            onSubmit={(values) => {
+              let firstName = values.firstName;
+              let lastName = values.lastName;
+              let email = values.email;
+              let phone = values.phone;
+              let password = values.password;
+              console.log(values);
+              dispatcher(
+                register({
+                  firstName,
+                  lastName,
+                  email,
+                  phone,
+                  password
+                })
+              );
+              //
             }}
           >
             {({
@@ -73,19 +99,14 @@ const RegisterView = () => {
             }) => (
               <form onSubmit={handleSubmit}>
                 <Box mb={3}>
-                  <Typography
-                    color="textPrimary"
-                    variant="h2"
-                  >
+                  <Typography color="textPrimary" variant="h2">
                     Creer Un Nouveau Compte
                   </Typography>
                   <Typography
                     color="textSecondary"
                     gutterBottom
                     variant="body2"
-                  >
-
-                  </Typography>
+                  ></Typography>
                 </Box>
                 <TextField
                   error={Boolean(touched.firstName && errors.firstName)}
@@ -124,17 +145,17 @@ const RegisterView = () => {
                   value={values.email}
                   variant="outlined"
                 />
-                 <TextField
-                  error={Boolean(touched.email && errors.email)}
+                <TextField
+                  error={Boolean(touched.phone && errors.phone)}
                   fullWidth
-                  helperText={touched.email && errors.email}
+                  helperText={touched.phone && errors.phone}
                   label="Télphone"
                   margin="normal"
                   name="phone"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   type="phone"
-                  value={values.email}
+                  value={values.phone}
                   variant="outlined"
                 />
                 <TextField
@@ -150,22 +171,14 @@ const RegisterView = () => {
                   value={values.password}
                   variant="outlined"
                 />
-                <Box
-                  alignItems="center"
-                  display="flex"
-                  ml={-1}
-                >
+                <Box alignItems="center" display="flex" ml={-1}>
                   <Checkbox
                     checked={values.policy}
                     name="policy"
                     onChange={handleChange}
                   />
-                  <Typography
-                    color="textSecondary"
-                    variant="body1"
-                  >
-                    J'ai lu les
-                    {' '}
+                  <Typography color="textSecondary" variant="body1">
+                    J'ai lu les{' '}
                     <Link
                       color="primary"
                       component={RouterLink}
@@ -178,9 +191,7 @@ const RegisterView = () => {
                   </Typography>
                 </Box>
                 {Boolean(touched.policy && errors.policy) && (
-                  <FormHelperText error>
-                    {errors.policy}
-                  </FormHelperText>
+                  <FormHelperText error>{errors.policy}</FormHelperText>
                 )}
                 <Box my={2}>
                   <Button
@@ -194,17 +205,9 @@ const RegisterView = () => {
                     S'inscrire
                   </Button>
                 </Box>
-                <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                  Vous avez déja un compte?
-                  {' '}
-                  <Link
-                    component={RouterLink}
-                    to="/"
-                    variant="h6"
-                  >
+                <Typography color="textSecondary" variant="body1">
+                  Vous avez déja un compte?{' '}
+                  <Link component={RouterLink} to="/" variant="h6">
                     Se connecter
                   </Link>
                 </Typography>

@@ -15,7 +15,8 @@ import {
 import FacebookIcon from 'src/icons/Facebook';
 import GoogleIcon from 'src/icons/Google';
 import Page from 'src/components/Page';
-
+import { useDispatch } from 'react-redux';
+import { login } from 'src/actions/auth.actions';
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -28,12 +29,9 @@ const useStyles = makeStyles((theme) => ({
 const LoginView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
-
+  const dispacther = useDispatch();
   return (
-    <Page
-      className={classes.root}
-      title="Login"
-    >
+    <Page className={classes.root} title="Login">
       <Box
         display="flex"
         flexDirection="column"
@@ -47,11 +45,18 @@ const LoginView = () => {
               password: 'Password123'
             }}
             validationSchema={Yup.object().shape({
-              email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-              password: Yup.string().max(255).required('Password is required')
+              email: Yup.string()
+                .email('Vous devez entrer un email valid')
+                .max(255)
+                .required('Veuillez entrer un email'),
+              password: Yup.string()
+                .max(255)
+                .required('Mot de passe obligatoire')
             })}
-            onSubmit={() => {
-              navigate('/app/customers', { replace: true });
+            onSubmit={(values, actions) => {
+              let email = values.email;
+              let password = values.password;
+              dispacther(login(email, password));
             }}
           >
             {({
@@ -65,10 +70,7 @@ const LoginView = () => {
             }) => (
               <form onSubmit={handleSubmit}>
                 <Box mb={3}>
-                  <Typography
-                    color="textPrimary"
-                    variant="h2"
-                  >
+                  <Typography color="textPrimary" variant="h2">
                     Se Connecter
                   </Typography>
                   {/* <Typography
@@ -79,15 +81,8 @@ const LoginView = () => {
                     Sign in on the internal platform
                   </Typography> */}
                 </Box>
-                <Grid
-                  container
-                  spacing={3}
-                >
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                  >
+                <Grid container spacing={3}>
+                  <Grid item xs={12} md={6}>
                     <Button
                       color="primary"
                       fullWidth
@@ -99,11 +94,7 @@ const LoginView = () => {
                       Avec Facebook
                     </Button>
                   </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                  >
+                  <Grid item xs={12} md={6}>
                     <Button
                       fullWidth
                       startIcon={<GoogleIcon />}
@@ -111,20 +102,17 @@ const LoginView = () => {
                       size="large"
                       variant="contained"
                     >
-                     Avec Google
+                      Avec Google
                     </Button>
                   </Grid>
                 </Grid>
-                <Box
-                  mt={3}
-                  mb={1}
-                >
+                <Box mt={3} mb={1}>
                   <Typography
                     align="center"
                     color="textSecondary"
                     variant="body1"
                   >
-                   Ou avec votre adresse email 
+                    Ou avec votre adresse email
                   </Typography>
                 </Box>
                 <TextField
@@ -165,17 +153,9 @@ const LoginView = () => {
                     Se Connecter
                   </Button>
                 </Box>
-                <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                 Vous n'avez pas un compte ? 
-                  {' '}
-                  <Link
-                    component={RouterLink}
-                    to="/register"
-                    variant="h6"
-                  >
+                <Typography color="textSecondary" variant="body1">
+                  Vous n'avez pas un compte ?{' '}
+                  <Link component={RouterLink} to="/register" variant="h6">
                     S'inscrire
                   </Link>
                 </Typography>
