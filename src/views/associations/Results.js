@@ -83,7 +83,7 @@ const Results = ({ className, customers, ...rest }) => {
             <TableHead>
               <TableRow>
                 <TableCell padding="checkbox">
-                  <Checkbox
+                  {/* <Checkbox
                     checked={selectedCustomerIds.length === customers.length}
                     color="primary"
                     indeterminate={
@@ -91,22 +91,22 @@ const Results = ({ className, customers, ...rest }) => {
                       && selectedCustomerIds.length < customers.length
                     }
                     onChange={handleSelectAll}
-                  />
+                  /> */}
                 </TableCell>
                 <TableCell>
-                  Name
+                  Association
                 </TableCell>
                 <TableCell>
                   Email
                 </TableCell>
                 <TableCell>
-                  Location
+                  Emplacement
                 </TableCell>
                 <TableCell>
-                  Phone
+                  Téléphone
                 </TableCell>
                 <TableCell>
-                  Registration date
+                 Actions
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -118,11 +118,11 @@ const Results = ({ className, customers, ...rest }) => {
                   selected={selectedCustomerIds.indexOf(customer.id) !== -1}
                 >
                   <TableCell padding="checkbox">
-                    <Checkbox
+                    {/* <Checkbox
                       checked={selectedCustomerIds.indexOf(customer.id) !== -1}
                       onChange={(event) => handleSelectOne(event, customer.id)}
                       value="true"
-                    />
+                    /> */}
                   </TableCell>
                   <TableCell>
                     <Box

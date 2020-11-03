@@ -50,15 +50,16 @@ const RegisterView = () => {
             }}
             validationSchema={
               Yup.object().shape({
-                email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                firstName: Yup.string().max(255).required('First name is required'),
-                lastName: Yup.string().max(255).required('Last name is required'),
-                password: Yup.string().max(255).required('password is required'),
-                policy: Yup.boolean().oneOf([true], 'This field must be checked')
+                email: Yup.string().email('Email non valide').max(255).required('Veuillez saisir un email '),
+                firstName: Yup.string().max(255).required('Veuillez saisir votre prénom '),
+                lastName: Yup.string().max(255).required('Veuillez saisir votre nom'),
+                password: Yup.string().max(255).required('Veuillez saisir un mot de passe '),
+                policy: Yup.boolean().oneOf([true], 'Vous devez accepter les termes at conditions'),
+                phone:Yup.string().required('Veuillez saisir votre téléphone')
               })
             }
             onSubmit={() => {
-              navigate('/app/dashboard', { replace: true });
+              navigate('/app', { replace: true });
             }}
           >
             {({
@@ -76,21 +77,21 @@ const RegisterView = () => {
                     color="textPrimary"
                     variant="h2"
                   >
-                    Create new account
+                    Creer Un Nouveau Compte
                   </Typography>
                   <Typography
                     color="textSecondary"
                     gutterBottom
                     variant="body2"
                   >
-                    Use your email to create new account
+
                   </Typography>
                 </Box>
                 <TextField
                   error={Boolean(touched.firstName && errors.firstName)}
                   fullWidth
                   helperText={touched.firstName && errors.firstName}
-                  label="First name"
+                  label="Prénom"
                   margin="normal"
                   name="firstName"
                   onBlur={handleBlur}
@@ -102,7 +103,7 @@ const RegisterView = () => {
                   error={Boolean(touched.lastName && errors.lastName)}
                   fullWidth
                   helperText={touched.lastName && errors.lastName}
-                  label="Last name"
+                  label="Nom"
                   margin="normal"
                   name="lastName"
                   onBlur={handleBlur}
@@ -114,7 +115,7 @@ const RegisterView = () => {
                   error={Boolean(touched.email && errors.email)}
                   fullWidth
                   helperText={touched.email && errors.email}
-                  label="Email Address"
+                  label="Email"
                   margin="normal"
                   name="email"
                   onBlur={handleBlur}
@@ -123,11 +124,24 @@ const RegisterView = () => {
                   value={values.email}
                   variant="outlined"
                 />
+                 <TextField
+                  error={Boolean(touched.email && errors.email)}
+                  fullWidth
+                  helperText={touched.email && errors.email}
+                  label="Télphone"
+                  margin="normal"
+                  name="phone"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  type="phone"
+                  value={values.email}
+                  variant="outlined"
+                />
                 <TextField
                   error={Boolean(touched.password && errors.password)}
                   fullWidth
                   helperText={touched.password && errors.password}
-                  label="Password"
+                  label="Mot de passe"
                   margin="normal"
                   name="password"
                   onBlur={handleBlur}
@@ -150,7 +164,7 @@ const RegisterView = () => {
                     color="textSecondary"
                     variant="body1"
                   >
-                    I have read the
+                    J'ai lu les
                     {' '}
                     <Link
                       color="primary"
@@ -159,7 +173,7 @@ const RegisterView = () => {
                       underline="always"
                       variant="h6"
                     >
-                      Terms and Conditions
+                      Termes et Conditions
                     </Link>
                   </Typography>
                 </Box>
@@ -177,21 +191,21 @@ const RegisterView = () => {
                     type="submit"
                     variant="contained"
                   >
-                    Sign up now
+                    S'inscrire
                   </Button>
                 </Box>
                 <Typography
                   color="textSecondary"
                   variant="body1"
                 >
-                  Have an account?
+                  Vous avez déja un compte?
                   {' '}
                   <Link
                     component={RouterLink}
-                    to="/login"
+                    to="/"
                     variant="h6"
                   >
-                    Sign in
+                    Se connecter
                   </Link>
                 </Typography>
               </form>
