@@ -17,7 +17,7 @@ import Page from 'src/components/Page';
 import { useDispatch } from 'react-redux';
 import { register } from '../../actions/auth.actions';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     height: '100%',
@@ -69,7 +69,7 @@ const RegisterView = () => {
               ),
               phone: Yup.string().required('Veuillez saisir votre téléphone')
             })}
-            onSubmit={(values) => {
+            onSubmit={values => {
               let firstName = values.firstName;
               let lastName = values.lastName;
               let email = values.email;
@@ -82,7 +82,8 @@ const RegisterView = () => {
                   lastName,
                   email,
                   phone,
-                  password
+                  password,
+                  navigate
                 })
               );
               //

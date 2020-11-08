@@ -1,8 +1,8 @@
 import setAuthToken from '../utils/setAuthToken';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-const BASE_URL = 'http://localhost:4000/user';
-export const loadUser = () => async (dispatch) => {
+import Swal from 'sweetalert2';
+const BASE_URL = 'https://env-hero.herokuapp.com/user';
+export const loadUser = () => async dispatch => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
@@ -29,11 +29,12 @@ export const register = ({
   lastName,
   email,
   phoneNumber,
-  password
-}) => async (dispatch) => {
-  dispatch({
-    type: 'USER_LOADING'
-  });
+  password,
+  navigate
+}) => async dispatch => {
+  // dispatch({
+  //   type: 'USER_LOADING'
+  // });
   const config = {
     headers: {
       'Content-Type': 'application/json'
@@ -47,18 +48,26 @@ export const register = ({
     phoneNumber,
     password
   });
-  console.log(body);
+  //console.log(body);
 
   try {
     const res = await axios.post(BASE_URL + '/register', body, config);
     dispatch({
       type: 'REGISTER_SUCCESS'
     });
-    localStorage.setItem('token', res.data.token);
-    localStorage.setItem('userid', res.data.user);
-    const navigate = useNavigate();
-    navigate('/app/customers', { replace: true });
+    if (res.data.token) {
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('userid', res.data.user);
+
+      navigate('/app/customers', { replace: true });
+    }
   } catch (err) {
+    Swal.fire({
+      title: 'Error!',
+      text: "Une erreur est s'ervenue",
+      icon: 'error',
+      confirmButtonText: 'Cool'
+    });
     dispatch({
       type: 'REGISTER_FAIL'
     });
@@ -67,10 +76,10 @@ export const register = ({
 
 //Login
 
-export const login = (email, password) => async (dispatch) => {
-  dispatch({
-    type: 'USER_LOADING'
-  });
+export const login = (email, password, navigate) => async dispatch => {
+  // dispatch({
+  //   type: 'USER_LOADING'
+  // });
   const config = {
     headers: {
       'Content-Type': 'application/json'
@@ -80,15 +89,24 @@ export const login = (email, password) => async (dispatch) => {
   const body = JSON.stringify({ email, password });
 
   try {
-    const res = await axios.post('/login', body, config);
+    const res = await axios.post(BASE_URL + '/login', body, config);
     dispatch({
       type: 'LOGIN_SUCCESS',
       payload: res.data
     });
-    dispatch(loadUser());
-    const navigate = useNavigate();
-    navigate('/app/customers', { replace: true });
+    //dispatch(loadUser());
+    if (res.data.token) {
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('userid', res.data.user);
+      navigate('/app/customers', { replace: true });
+    }
   } catch (err) {
+    Swal.fire({
+      title: 'Erreur!',
+      text: 'Adresse ou mot de passe incorrect',
+      icon: 'error',
+      confirmButtonText: 'Cool'
+    });
     dispatch({
       type: 'LOGIN_FAIL'
     });
@@ -97,7 +115,7 @@ export const login = (email, password) => async (dispatch) => {
 
 //Logout
 
-export const logout = () => async (dispatch) => {
+export const logout = () => async dispatch => {
   dispatch({
     type: 'USER_LOADING'
   });

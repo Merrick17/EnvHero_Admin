@@ -17,7 +17,7 @@ import GoogleIcon from 'src/icons/Google';
 import Page from 'src/components/Page';
 import { useDispatch } from 'react-redux';
 import { login } from 'src/actions/auth.actions';
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     height: '100%',
@@ -56,7 +56,7 @@ const LoginView = () => {
             onSubmit={(values, actions) => {
               let email = values.email;
               let password = values.password;
-              dispacther(login(email, password));
+              dispacther(login(email, password, navigate));
             }}
           >
             {({
