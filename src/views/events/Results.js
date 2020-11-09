@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import IconButton from '@material-ui/core/IconButton';
+import { Edit, Trash } from 'react-feather';
 import {
   Avatar,
   Box,
@@ -21,7 +23,7 @@ import {
 import getInitials from 'src/utils/getInitials';
 import { getAllEvents } from '../../actions/events.actions';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {},
   avatar: {
     marginRight: theme.spacing(2)
@@ -33,12 +35,12 @@ const Results = ({ className, customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-
-  const handleSelectAll = event => {
+  const BASE_URL = 'https://env-hero.herokuapp.com/';
+  const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
 
     if (event.target.checked) {
-      newSelectedCustomerIds = customers.map(customer => customer.id);
+      newSelectedCustomerIds = customers.map((customer) => customer.id);
     } else {
       newSelectedCustomerIds = [];
     }
@@ -73,7 +75,7 @@ const Results = ({ className, customers, ...rest }) => {
     setSelectedCustomerIds(newSelectedCustomerIds);
   };
 
-  const handleLimitChange = event => {
+  const handleLimitChange = (event) => {
     setLimit(event.target.value);
   };
 
@@ -81,9 +83,10 @@ const Results = ({ className, customers, ...rest }) => {
     setPage(newPage);
   };
   const dispatcher = useDispatch();
-  const state = useSelector(state => state.eventReducer);
+  const state = useSelector((state) => state.eventReducer);
   useEffect(() => {
     dispatcher(getAllEvents());
+    console.log(state);
   }, []);
 
   return (
@@ -112,42 +115,44 @@ const Results = ({ className, customers, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map(customer => (
-                <TableRow
-                  hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
-                >
-                  <TableCell padding="checkbox">
-                    {/* <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer.id)}
-                      value="true"
-                    /> */}
-                  </TableCell>
-                  <TableCell>
-                    <Box alignItems="center" display="flex">
-                      <Avatar
-                        className={classes.avatar}
-                        src={customer.avatarUrl}
-                      >
-                        {getInitials(customer.name)}
-                      </Avatar>
-                      <Typography color="textPrimary" variant="body1">
-                        {customer.name}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>{customer.email}</TableCell>
-                  <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
-                  </TableCell>
-                  <TableCell>{customer.phone}</TableCell>
-                  <TableCell>
-                    {moment(customer.createdAt).format('DD/MM/YYYY')}
-                  </TableCell>
-                </TableRow>
-              ))}
+              {state.slice(0, limit).map((ev) => {
+                console.log(ev);
+                return (
+                  <TableRow
+                    hover
+                    key={ev._id}
+                    selected={selectedCustomerIds.indexOf(ev._id) !== -1}
+                  >
+                    <TableCell padding="checkbox"></TableCell>
+                    <TableCell>
+                      <Box alignItems="center" display="flex">
+                        <Avatar
+                          className={classes.avatar}
+                          src={BASE_URL + ev.eventImage}
+                        >
+                          {/* {ev.title} */}
+                        </Avatar>
+                        <Typography color="textPrimary" variant="body1">
+                          {ev.title}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell>{ev.description}</TableCell>
+                    <TableCell>
+                      {/* {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`} */}
+                    </TableCell>
+                    <TableCell></TableCell>
+                    <TableCell>
+                      <IconButton color="primary">
+                        <Edit />
+                      </IconButton>
+                      <IconButton color="red">
+                        <Trash />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </Box>

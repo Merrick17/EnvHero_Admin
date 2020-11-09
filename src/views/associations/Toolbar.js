@@ -1,6 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import ImageUploader from 'react-images-upload';
+
+import {
+  addAssociation,
+  getAllAssociations
+} from '../../actions/association.action';
 import {
   Box,
   Button,
@@ -20,9 +26,9 @@ import {
   InputLabel,
   Select
 } from '@material-ui/core';
-import { KeyboardDatePicker } from '@material-ui/pickers';
 
 import { Search as SearchIcon } from 'react-feather';
+import { useSelector, useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -35,21 +41,28 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 150,
-    marginRight:theme.spacing(2)
+    marginRight: theme.spacing(2)
   },
   selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
+    marginTop: theme.spacing(2)
+  }
 }));
 
 const Toolbar = ({ className, ...rest }) => {
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
-  const [age, setAge] = React.useState('');
+  const [adr, setAdr] = React.useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
 
+  const [Upload, setUpload] = useState({ image: '' });
+  const [password, setPassword] = useState('');
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setAdr(event.target.value);
   };
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state.associationReducer);
   const [selectedDate, setSelectedDate] = React.useState(
     new Date('2014-08-18T21:11:54')
   );
@@ -63,6 +76,18 @@ const Toolbar = ({ className, ...rest }) => {
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
+  const addAssociationHandling = () => {
+    let formData = new FormData();
+    formData.append('fullName', name);
+    formData.append('lastName', '');
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('phoneNumber', phone);
+    formData.append('address', adr);
+    formData.append('image', Upload.image);
+    dispatch(addAssociation(formData));
+    handleClose();
+  };
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Dialog
@@ -70,7 +95,9 @@ const Toolbar = ({ className, ...rest }) => {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Ajouter une association</DialogTitle>
+        <DialogTitle id="form-dialog-title">
+          Ajouter une association
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
             {/* To subscribe to this website, please enter your email address here.
@@ -84,59 +111,110 @@ const Toolbar = ({ className, ...rest }) => {
             type="text"
             fullWidth
             variant="outlined"
+            value={name}
+            onChange={(event) => {
+              setName(event.target.value);
+            }}
           />
           <TextField
             autoFocus
             margin="dense"
-            id="name"
+            id="emailAssociation"
             label="Email"
             type="email"
             fullWidth
             variant="outlined"
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+            }}
           />
-           <TextField
+
+          <TextField
             autoFocus
             margin="dense"
-            id="name"
+            id="psw"
+            label="Mot de passe"
+            type="password"
+            fullWidth
+            variant="outlined"
+            value={password}
+            onChange={(event) => {
+              setPassword(event.target.value);
+            }}
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="phone"
             label="Téléphone"
             type="phone"
             fullWidth
             variant="outlined"
+            value={phone}
+            onChange={(event) => {
+              setPhone(event.target.value);
+            }}
           />
-           <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Logo "
-            type="file"
+
+          <InputLabel id="demo-simple-select-outlined-label">Region</InputLabel>
+          <Select
+            labelId="demo-simple-select-outlined-label"
+            id="demo-simple-select-outlined"
+            value={adr}
+            onChange={handleChange}
+            label="Organisé Par"
             fullWidth
             variant="outlined"
+            autoFocus
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={'Ariana'}>Ariana</MenuItem>
+            <MenuItem value={'Beja'}>Béja</MenuItem>
+            <MenuItem value={'Tunis'}>Tunis</MenuItem>
+            <MenuItem value={'Ben Arous'}>Ben Arous</MenuItem>
+            <MenuItem value={'Sousse'}>Sousse</MenuItem>
+            <MenuItem value={'Monastir'}>Monastir</MenuItem>
+            <MenuItem value={'Kairouan'}>Kairouan</MenuItem>
+            <MenuItem value={'Gabes'}>Gabes</MenuItem>
+            <MenuItem value={'Tozeur'}>Tozeur</MenuItem>
+            <MenuItem value={'Siliana'}>Siliana</MenuItem>
+            <MenuItem value={'SidiBouzid'}>Sidi Bouzid</MenuItem>
+            <MenuItem value={'Mednine'}>Mednine</MenuItem>
+            <MenuItem value={'Sfax'}>Sfax</MenuItem>
+            <MenuItem value={'Mahdia'}>Mahdia</MenuItem>
+            <MenuItem value={'Tataouine'}>Tataouine</MenuItem>
+            <MenuItem value={'Gafsa'}>Gafsa</MenuItem>
+            <MenuItem value={'Zaghouane'}>Zaghouane</MenuItem>
+            <MenuItem value={'Manouba'}>Manouba</MenuItem>
+            <MenuItem value={'Nabeul'}>Nabeul</MenuItem>
+            <MenuItem value={'Bizert'}>Bizert</MenuItem>
+            <MenuItem value={'Jandouba'}>Jandouba</MenuItem>
+            <MenuItem value={'Gebili'}>Gebili</MenuItem>
+            <MenuItem value={'Kef'}>Kef</MenuItem>
+            <MenuItem value={'kasserine'}>Kasserine</MenuItem>
+          </Select>
+          <ImageUploader
+            withIcon={true}
+            buttonText="Choisir une image"
+            withPreview={true}
+            onChange={(e) => {
+              setUpload({
+                image: e[0]
+              });
+            }}
+            imgExtension={['.jpg', '.gif', '.png', '.gif']}
+            maxFileSize={5242880}
+            singleImage={true}
           />
-           <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel id="demo-simple-select-outlined-label">Region</InputLabel>
-            <Select
-              labelId="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
-              value={age}
-              onChange={handleChange}
-              label="Organisé Par"
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-          </FormControl>
-
-
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Annuler
           </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={addAssociationHandling} color="primary">
             Confirmer
           </Button>
         </DialogActions>

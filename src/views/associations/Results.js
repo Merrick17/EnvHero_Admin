@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import { useDispatch, useSelector } from 'react-redux';
+import IconButton from '@material-ui/core/IconButton';
+import { Edit, Trash } from 'react-feather';
 import {
   Avatar,
   Box,
@@ -18,6 +21,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
+import { getAllAssociations } from 'src/actions/association.action';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -31,6 +35,9 @@ const Results = ({ className, customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+  const dispatch = useDispatch();
+  const BASE_URL = 'https://env-hero.herokuapp.com/';
+  const state = useSelector((state) => state.associationReducer);
 
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
@@ -43,17 +50,26 @@ const Results = ({ className, customers, ...rest }) => {
 
     setSelectedCustomerIds(newSelectedCustomerIds);
   };
-
+  useEffect(() => {
+    dispatch(getAllAssociations());
+  }, []);
   const handleSelectOne = (event, id) => {
     const selectedIndex = selectedCustomerIds.indexOf(id);
     let newSelectedCustomerIds = [];
 
     if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds, id);
+      newSelectedCustomerIds = newSelectedCustomerIds.concat(
+        selectedCustomerIds,
+        id
+      );
     } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(1));
+      newSelectedCustomerIds = newSelectedCustomerIds.concat(
+        selectedCustomerIds.slice(1)
+      );
     } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(0, -1));
+      newSelectedCustomerIds = newSelectedCustomerIds.concat(
+        selectedCustomerIds.slice(0, -1)
+      );
     } else if (selectedIndex > 0) {
       newSelectedCustomerIds = newSelectedCustomerIds.concat(
         selectedCustomerIds.slice(0, selectedIndex),
@@ -73,10 +89,7 @@ const Results = ({ className, customers, ...rest }) => {
   };
 
   return (
-    <Card
-      className={clsx(classes.root, className)}
-      {...rest}
-    >
+    <Card className={clsx(classes.root, className)} {...rest}>
       <PerfectScrollbar>
         <Box minWidth={1050}>
           <Table>
@@ -93,29 +106,19 @@ const Results = ({ className, customers, ...rest }) => {
                     onChange={handleSelectAll}
                   /> */}
                 </TableCell>
-                <TableCell>
-                  Association
-                </TableCell>
-                <TableCell>
-                  Email
-                </TableCell>
-                <TableCell>
-                  Emplacement
-                </TableCell>
-                <TableCell>
-                  Téléphone
-                </TableCell>
-                <TableCell>
-                 Actions
-                </TableCell>
+                <TableCell>Association</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Emplacement</TableCell>
+                <TableCell>Téléphone</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+              {state.slice(0, limit).map((customer) => (
                 <TableRow
                   hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+                  key={customer._id}
+                  selected={selectedCustomerIds.indexOf(customer._id) !== -1}
                 >
                   <TableCell padding="checkbox">
                     {/* <Checkbox
@@ -125,35 +128,28 @@ const Results = ({ className, customers, ...rest }) => {
                     /> */}
                   </TableCell>
                   <TableCell>
-                    <Box
-                      alignItems="center"
-                      display="flex"
-                    >
+                    <Box alignItems="center" display="flex">
                       <Avatar
                         className={classes.avatar}
-                        src={customer.avatarUrl}
+                        src={BASE_URL + customer.imageUrl}
                       >
                         {getInitials(customer.name)}
                       </Avatar>
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
+                      <Typography color="textPrimary" variant="body1">
                         {customer.name}
                       </Typography>
                     </Box>
                   </TableCell>
+                  <TableCell>{customer.email}</TableCell>
+                  <TableCell>{customer.address}</TableCell>
+                  <TableCell>{customer.phoneNumber}</TableCell>
                   <TableCell>
-                    {customer.email}
-                  </TableCell>
-                  <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
-                  </TableCell>
-                  <TableCell>
-                    {customer.phone}
-                  </TableCell>
-                  <TableCell>
-                    {moment(customer.createdAt).format('DD/MM/YYYY')}
+                    <IconButton color="primary">
+                      <Edit />
+                    </IconButton>
+                    <IconButton color="red">
+                      <Trash />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}

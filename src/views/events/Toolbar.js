@@ -24,8 +24,9 @@ import {
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { addEventApi } from '../../actions/events.actions';
 import { Search as SearchIcon } from 'react-feather';
+import ImageUploader from 'react-images-upload';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {},
   importButton: {
     marginRight: theme.spacing(1)
@@ -48,8 +49,9 @@ const Toolbar = ({ className, ...rest }) => {
   const classes = useStyles();
   const [name, setName] = useState('');
   const [desc, setDesc] = useState('');
+  const [emplacement, setEmplacement] = useState('');
   const dispatch = useDispatch();
- 
+  const [Upload, setUpload] = useState({ image: '' });
   // const handleChange = (event) => {
   //   setAge(event.target.value);
   // };
@@ -63,20 +65,21 @@ const Toolbar = ({ className, ...rest }) => {
     setOpen(false);
   };
 
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    //setOpen(false);
+  };
   const addEvent = () => {
     let body = new FormData();
     body.append('title', name);
     body.append('desc', desc);
     body.append('dateEvent', selectedDate.toDateString());
-    body.append('eventImage', img);
-    dispatch(addEventApi(JSON.stringify(body)));
-
-  };
-  const [img, setImg] = useState(undefined);
-  const [fileInfos, setFileInfos] = useState([]);
-  const handleDateChange = date => {
-    setSelectedDate(date);
-    setOpen(false);
+    body.append('emplacement', emplacement);
+    let added = localStorage.getItem('userid');
+    body.append('image', Upload.image);
+    body.append('addedBy', added);
+    dispatch(addEventApi(body));
+    handleClose();
   };
   return (
     <div className={clsx(classes.root, className)} {...rest}>
@@ -97,7 +100,7 @@ const Toolbar = ({ className, ...rest }) => {
             fullWidth
             variant="outlined"
             value={name}
-            onChange={event => {
+            onChange={(event) => {
               //console.log()
               setName(event.target.value);
             }}
@@ -111,22 +114,21 @@ const Toolbar = ({ className, ...rest }) => {
             fullWidth
             variant="outlined"
             value={desc}
-            onChange={event => {
+            onChange={(event) => {
               setDesc(event.target.value);
             }}
           />
           <TextField
             autoFocus
             margin="dense"
-            id="image"
-            label="Image"
-            type="file"
+            id="emp"
+            label="Emplacement"
+            type="text"
             fullWidth
             variant="outlined"
-            value={img}
-            onChange={event => {
-              setFileInfos(event.target.files)
-              //setImg(event.target.files[0]);
+            value={emplacement}
+            onChange={(event) => {
+              setEmplacement(event.target.value);
             }}
           />
 
@@ -141,12 +143,25 @@ const Toolbar = ({ className, ...rest }) => {
               'aria-label': 'change date'
             }}
           />
+          <ImageUploader
+            withIcon={true}
+            buttonText="Choisir une image"
+            withPreview={true}
+            onChange={(e) => {
+              setUpload({
+                image: e[0]
+              });
+            }}
+            imgExtension={['.jpg', '.gif', '.png', '.gif']}
+            maxFileSize={5242880}
+            singleImage={true}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Annuler
           </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={addEvent} color="primary">
             Confirmer
           </Button>
         </DialogActions>

@@ -2,7 +2,7 @@ import setAuthToken from '../utils/setAuthToken';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 const BASE_URL = 'https://env-hero.herokuapp.com/user';
-export const loadUser = () => async dispatch => {
+export const loadUser = () => async (dispatch) => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
@@ -31,7 +31,7 @@ export const register = ({
   phoneNumber,
   password,
   navigate
-}) => async dispatch => {
+}) => async (dispatch) => {
   // dispatch({
   //   type: 'USER_LOADING'
   // });
@@ -60,6 +60,13 @@ export const register = ({
       localStorage.setItem('userid', res.data.user);
 
       navigate('/app/customers', { replace: true });
+    } else {
+      Swal.fire({
+        title: 'Error!',
+        text: "Une erreur est s'ervenue",
+        icon: 'error',
+        confirmButtonText: 'Cool'
+      });
     }
   } catch (err) {
     Swal.fire({
@@ -76,7 +83,7 @@ export const register = ({
 
 //Login
 
-export const login = (email, password, navigate) => async dispatch => {
+export const login = (email, password, navigate) => async (dispatch) => {
   dispatch({
     type: 'USER_LOADING'
   });
@@ -94,11 +101,21 @@ export const login = (email, password, navigate) => async dispatch => {
       type: 'LOGIN_SUCCESS',
       payload: res.data
     });
+    dispatch({
+      type: 'USER_FINISHED'
+    });
     //dispatch(loadUser());
     if (res.data.token) {
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('userid', res.data.user);
       navigate('/app/customers', { replace: true });
+    } else {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Email ou mot de passe incorrect',
+        icon: 'error',
+        confirmButtonText: 'Cool'
+      });
     }
   } catch (err) {
     Swal.fire({
@@ -115,7 +132,7 @@ export const login = (email, password, navigate) => async dispatch => {
 
 //Logout
 
-export const logout = () => async dispatch => {
+export const logout = () => async (dispatch) => {
   dispatch({
     type: 'USER_LOADING'
   });

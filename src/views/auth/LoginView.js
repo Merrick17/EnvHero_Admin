@@ -152,7 +152,7 @@ const LoginView = () => {
                 <Box my={2}>
                   <Button
                     color="primary"
-                    disabled={isSubmitting}
+                    disabled={state}
                     fullWidth
                     size="large"
                     type="submit"
