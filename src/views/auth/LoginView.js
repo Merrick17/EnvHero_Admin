@@ -17,7 +17,10 @@ import GoogleIcon from 'src/icons/Google';
 import Page from 'src/components/Page';
 import { useDispatch } from 'react-redux';
 import { login } from 'src/actions/auth.actions';
-const useStyles = makeStyles(theme => ({
+import { css } from '@emotion/core';
+import ClipLoader from 'react-spinners/ClipLoader';
+import { useSelector } from 'react-redux';
+const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     height: '100%',
@@ -25,11 +28,16 @@ const useStyles = makeStyles(theme => ({
     paddingTop: theme.spacing(3)
   }
 }));
-
+const override = css`
+  display: block;
+  margin: 0 auto;
+  border-color: green;
+`;
 const LoginView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const dispacther = useDispatch();
+  const state = useSelector((state) => state.loadingReducer);
   return (
     <Page className={classes.root} title="Login">
       <Box
@@ -163,6 +171,12 @@ const LoginView = () => {
             )}
           </Formik>
         </Container>
+        <ClipLoader
+          css={override}
+          size={150}
+          color={'#123abc'}
+          loading={state}
+        />
       </Box>
     </Page>
   );

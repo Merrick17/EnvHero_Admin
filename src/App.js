@@ -10,7 +10,9 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { Provider } from 'react-redux';
 import store from './store/index';
+
 const App = () => {
+
   const routing = useRoutes(routes);
 
   return (
@@ -18,6 +20,7 @@ const App = () => {
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <ThemeProvider theme={theme}>
           <GlobalStyles />
+
           {routing}
         </ThemeProvider>
       </MuiPickersUtilsProvider>

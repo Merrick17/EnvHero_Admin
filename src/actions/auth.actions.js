@@ -77,9 +77,9 @@ export const register = ({
 //Login
 
 export const login = (email, password, navigate) => async dispatch => {
-  // dispatch({
-  //   type: 'USER_LOADING'
-  // });
+  dispatch({
+    type: 'USER_LOADING'
+  });
   const config = {
     headers: {
       'Content-Type': 'application/json'
