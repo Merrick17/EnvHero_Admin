@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import {
@@ -21,10 +22,10 @@ import {
   Select
 } from '@material-ui/core';
 import { KeyboardDatePicker } from '@material-ui/pickers';
-
+import { addEventApi } from '../../actions/events.actions';
 import { Search as SearchIcon } from 'react-feather';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {},
   importButton: {
     marginRight: theme.spacing(1)
@@ -35,21 +36,23 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 150,
-    marginRight:theme.spacing(2)
+    marginRight: theme.spacing(2)
   },
   selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
+    marginTop: theme.spacing(2)
+  }
 }));
 
 const Toolbar = ({ className, ...rest }) => {
   const [open, setOpen] = React.useState(false);
   const classes = useStyles();
-  const [age, setAge] = React.useState('');
-
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
+  const [name, setName] = useState('');
+  const [desc, setDesc] = useState('');
+  const dispatch = useDispatch();
+ 
+  // const handleChange = (event) => {
+  //   setAge(event.target.value);
+  // };
   const [selectedDate, setSelectedDate] = React.useState(
     new Date('2014-08-18T21:11:54')
   );
@@ -60,8 +63,20 @@ const Toolbar = ({ className, ...rest }) => {
     setOpen(false);
   };
 
-  const handleDateChange = (date) => {
+  const addEvent = () => {
+    let body = new FormData();
+    body.append('title', name);
+    body.append('desc', desc);
+    body.append('dateEvent', selectedDate.toDateString());
+    body.append('eventImage', img);
+    dispatch(addEventApi(JSON.stringify(body)));
+
+  };
+  const [img, setImg] = useState(undefined);
+  const [fileInfos, setFileInfos] = useState([]);
+  const handleDateChange = date => {
     setSelectedDate(date);
+    setOpen(false);
   };
   return (
     <div className={clsx(classes.root, className)} {...rest}>
@@ -72,10 +87,7 @@ const Toolbar = ({ className, ...rest }) => {
       >
         <DialogTitle id="form-dialog-title">Ajouter un evenement</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {/* To subscribe to this website, please enter your email address here.
-            We will send updates occasionally. */}
-          </DialogContentText>
+          <DialogContentText></DialogContentText>
           <TextField
             autoFocus
             margin="dense"
@@ -84,33 +96,40 @@ const Toolbar = ({ className, ...rest }) => {
             type="text"
             fullWidth
             variant="outlined"
+            value={name}
+            onChange={event => {
+              //console.log()
+              setName(event.target.value);
+            }}
           />
           <TextField
             autoFocus
             margin="dense"
-            id="name"
+            id="desc"
             label="Description"
             type="text"
             fullWidth
             variant="outlined"
+            value={desc}
+            onChange={event => {
+              setDesc(event.target.value);
+            }}
           />
-           <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel id="demo-simple-select-outlined-label">Organisé Par</InputLabel>
-            <Select
-              labelId="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
-              value={age}
-              onChange={handleChange}
-              label="Organisé Par"
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-          </FormControl>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="image"
+            label="Image"
+            type="file"
+            fullWidth
+            variant="outlined"
+            value={img}
+            onChange={event => {
+              setFileInfos(event.target.files)
+              //setImg(event.target.files[0]);
+            }}
+          />
+
           <KeyboardDatePicker
             margin="normal"
             id="date-picker-dialog"
@@ -122,7 +141,6 @@ const Toolbar = ({ className, ...rest }) => {
               'aria-label': 'change date'
             }}
           />
-
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
