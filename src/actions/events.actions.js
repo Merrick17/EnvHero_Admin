@@ -12,3 +12,13 @@ export const getAllEvents = () => async dispatch => {
     payload: result.data.Events
   });
 };
+
+export const addEventApi = body => async dispatch => {
+  setAuthToken(localStorage.token);
+  let result = await axios.post(BASE_URL + '/create', body);
+  console.log(result.data);
+  dispatch({
+    type: 'ADD_EVENT',
+    payload: result.data
+  });
+};
