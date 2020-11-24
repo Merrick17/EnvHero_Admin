@@ -1,9 +1,9 @@
 const IncidentState = [];
 const incidentReducer = (state = IncidentState, action) => {
   switch (action.type) {
-    case 'GET_ALL_EVENTS':
+    case 'GET_ALL_ZONE':
       return action.payload;
-    case 'ADD_EVENT':
+    case 'ADD_ZONE':
       return [...state, action.payload];
 
     default:

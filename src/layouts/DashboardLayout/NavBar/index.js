@@ -57,7 +57,7 @@ const items = [
   {
     href: '/app/incidents',
     icon: MapIcon,
-    title: 'Incidents'
+    title: 'Zone de Danger'
   }
 ];
 
@@ -98,7 +98,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           to="/app/account"
         />
         <Typography className={classes.name} color="textPrimary" variant="h5">
-         Admin 
+         Admin
         </Typography>
         <Typography color="textSecondary" variant="body2">
          Admin

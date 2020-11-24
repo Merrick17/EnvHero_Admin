@@ -1,7 +1,7 @@
 import setAuthToken from '../utils/setAuthToken';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-const BASE_URL = 'https://env-hero.herokuapp.com/user';
+const BASE_URL = 'https://env-hero-api.herokuapp.com/user';
 export const loadUser = () => async (dispatch) => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
@@ -24,14 +24,7 @@ export const loadUser = () => async (dispatch) => {
 
 //Register
 
-export const register = ({
-  firstName,
-  lastName,
-  email,
-  phoneNumber,
-  password,
-  navigate
-}) => async (dispatch) => {
+export const register = (body, navigate) => async (dispatch) => {
   // dispatch({
   //   type: 'USER_LOADING'
   // });
@@ -40,26 +33,19 @@ export const register = ({
       'Content-Type': 'application/json'
     }
   };
-  console.log(firstName);
-  const body = JSON.stringify({
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    password
-  });
-  //console.log(body);
 
   try {
-    const res = await axios.post(BASE_URL + '/register', body, config);
+    const res = await axios.post(BASE_URL + '/association/add', body, config);
     dispatch({
       type: 'REGISTER_SUCCESS'
     });
-    if (res.data.token) {
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('userid', res.data.user);
-
-      navigate('/app/customers', { replace: true });
+    if (res.data.user) {
+      Swal.fire({
+        title: 'Success!',
+        text: "Success , en attentant de la confirmation d'admin ",
+        icon: 'success',
+        confirmButtonText: 'Cool'
+      });
     } else {
       Swal.fire({
         title: 'Error!',
@@ -93,10 +79,15 @@ export const login = (email, password, navigate) => async (dispatch) => {
     }
   };
 
-  const body = JSON.stringify({ email, password });
-
   try {
-    const res = await axios.post(BASE_URL + '/login', body, config);
+    const res = await axios.post(
+      BASE_URL + '/login',
+      {
+        login: email,
+        password: password
+      },
+      config
+    );
     dispatch({
       type: 'LOGIN_SUCCESS',
       payload: res.data

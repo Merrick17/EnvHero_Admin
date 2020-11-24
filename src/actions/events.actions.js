@@ -1,7 +1,7 @@
 import setAuthToken from '../utils/setAuthToken';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-const BASE_URL = 'https://env-hero.herokuapp.com/events';
+const BASE_URL = 'https://env-hero-api.herokuapp.com/events';
 
 export const getAllEvents = () => async (dispatch) => {
   setAuthToken(localStorage.token);

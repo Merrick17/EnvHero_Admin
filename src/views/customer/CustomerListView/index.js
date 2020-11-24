@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  Container,
-  makeStyles
-} from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import { Box, Container, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
 import data from './data';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllUsers } from 'src/actions/user.action';
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -20,17 +17,18 @@ const useStyles = makeStyles((theme) => ({
 
 const CustomerListView = () => {
   const classes = useStyles();
-  const [customers] = useState(data);
-
+  const [customers, setCustomers] = useState(data);
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.userReducer);
+  useEffect(() => {
+    dispatch(getAllUsers());
+  }, []);
   return (
-    <Page
-      className={classes.root}
-      title="Customers"
-    >
+    <Page className={classes.root} title="Customers">
       <Container maxWidth={false}>
         <Toolbar />
         <Box mt={3}>
-          <Results customers={customers} />
+          <Results customers={users} />
         </Box>
       </Container>
     </Page>

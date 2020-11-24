@@ -18,7 +18,8 @@ import {
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
-
+import IconButton from '@material-ui/core/IconButton';
+import { Edit, Trash } from 'react-feather';
 const useStyles = makeStyles((theme) => ({
   root: {},
   avatar: {
@@ -49,11 +50,18 @@ const Results = ({ className, customers, ...rest }) => {
     let newSelectedCustomerIds = [];
 
     if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds, id);
+      newSelectedCustomerIds = newSelectedCustomerIds.concat(
+        selectedCustomerIds,
+        id
+      );
     } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(1));
+      newSelectedCustomerIds = newSelectedCustomerIds.concat(
+        selectedCustomerIds.slice(1)
+      );
     } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(0, -1));
+      newSelectedCustomerIds = newSelectedCustomerIds.concat(
+        selectedCustomerIds.slice(0, -1)
+      );
     } else if (selectedIndex > 0) {
       newSelectedCustomerIds = newSelectedCustomerIds.concat(
         selectedCustomerIds.slice(0, selectedIndex),
@@ -73,10 +81,7 @@ const Results = ({ className, customers, ...rest }) => {
   };
 
   return (
-    <Card
-      className={clsx(classes.root, className)}
-      {...rest}
-    >
+    <Card className={clsx(classes.root, className)} {...rest}>
       <PerfectScrollbar>
         <Box minWidth={1050}>
           <Table>
@@ -93,19 +98,12 @@ const Results = ({ className, customers, ...rest }) => {
                     onChange={handleSelectAll}
                   /> */}
                 </TableCell>
-                <TableCell>
-                  Nom & Prénom
-                </TableCell>
-                <TableCell>
-                  Email
-                </TableCell>
-
-                <TableCell>
-                  Phone
-                </TableCell>
-                <TableCell>
-                  Registration date
-                </TableCell>
+                <TableCell>Nom & Prénom</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Adresse</TableCell>
+                <TableCell>Téléphone</TableCell>
+                <TableCell>Date Inscription</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -123,35 +121,29 @@ const Results = ({ className, customers, ...rest }) => {
                     /> */}
                   </TableCell>
                   <TableCell>
-                    <Box
-                      alignItems="center"
-                      display="flex"
-                    >
+                    <Box alignItems="center" display="flex">
                       <Avatar
                         className={classes.avatar}
-                        src={customer.avatarUrl}
+                        src={customer.imageUrl}
                       >
-                        {getInitials(customer.name)}
+                        {getInitials(customer.firstName)}
                       </Avatar>
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
-                        {customer.name}
+                      <Typography color="textPrimary" variant="body1">
+                        {customer.firstName} {customer.lastName}
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell>
-                    {customer.email}
-                  </TableCell>
-                  <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
-                  </TableCell>
-                  <TableCell>
-                    {customer.phone}
-                  </TableCell>
+                  <TableCell>{customer.email}</TableCell>
+                  <TableCell>{customer.address}</TableCell>
+                  <TableCell>{customer.phoneNumber}</TableCell>
                   <TableCell>
                     {moment(customer.createdAt).format('DD/MM/YYYY')}
+                  </TableCell>
+                  <TableCell>
+
+                      <IconButton color="red">
+                        <Trash />
+                      </IconButton>
                   </TableCell>
                 </TableRow>
               ))}

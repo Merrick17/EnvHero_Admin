@@ -49,12 +49,12 @@ const LoginView = () => {
         <Container maxWidth="sm">
           <Formik
             initialValues={{
-              email: 'demo@devias.io',
-              password: 'Password123'
+              login: '',
+              password: ''
             }}
             validationSchema={Yup.object().shape({
-              email: Yup.string()
-                .email('Vous devez entrer un email valid')
+              login: Yup.string()
+
                 .max(255)
                 .required('Veuillez entrer un email'),
               password: Yup.string()
@@ -62,9 +62,9 @@ const LoginView = () => {
                 .required('Mot de passe obligatoire')
             })}
             onSubmit={(values, actions) => {
-              let email = values.email;
+              let loginUser = values.login;
               let password = values.password;
-              dispacther(login(email, password, navigate));
+              dispacther(login(loginUser, password, navigate));
             }}
           >
             {({
@@ -120,20 +120,20 @@ const LoginView = () => {
                     color="textSecondary"
                     variant="body1"
                   >
-                    Ou avec votre adresse email
+                    Ou avec votre Login et Mot de passe
                   </Typography>
                 </Box>
                 <TextField
-                  error={Boolean(touched.email && errors.email)}
+                  error={Boolean(touched.login && errors.login)}
                   fullWidth
-                  helperText={touched.email && errors.email}
-                  label="Email"
+                  helperText={touched.login && errors.login}
+                  label="Login"
                   margin="normal"
-                  name="email"
+                  name="login"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  type="email"
-                  value={values.email}
+                  type="text"
+                  value={values.login}
                   variant="outlined"
                 />
                 <TextField

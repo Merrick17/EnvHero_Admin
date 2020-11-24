@@ -1,6 +1,6 @@
 import setAuthToken from '../utils/setAuthToken';
 import axios from 'axios';
-const BASE_URL = 'https://env-hero.herokuapp.com/user/association';
+const BASE_URL = 'https://env-hero-api.herokuapp.com/user/association';
 export const addAssociation = (body) => async (dispatch) => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);

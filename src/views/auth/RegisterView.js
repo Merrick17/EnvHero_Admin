@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -16,8 +16,8 @@ import {
 import Page from 'src/components/Page';
 import { useDispatch } from 'react-redux';
 import { register } from '../../actions/auth.actions';
-
-const useStyles = makeStyles(theme => ({
+import ImageUploader from 'react-images-upload';
+const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     height: '100%',
@@ -30,7 +30,7 @@ const RegisterView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const dispatcher = useDispatch();
-
+  const [Upload, setUpload] = useState({ image: '' });
   return (
     <Page className={classes.root} title="Register">
       <Box
@@ -47,7 +47,8 @@ const RegisterView = () => {
               lastName: '',
               password: '',
               phone: '',
-              policy: false
+              policy: false,
+              login: ''
             }}
             validationSchema={Yup.object().shape({
               email: Yup.string()
@@ -67,24 +68,32 @@ const RegisterView = () => {
                 [true],
                 'Vous devez accepter les termes at conditions'
               ),
+              login: Yup.string()
+                .max(255)
+                .required('Veuillez saisir un login '),
               phone: Yup.string().required('Veuillez saisir votre téléphone')
             })}
-            onSubmit={values => {
+            onSubmit={(values) => {
               let firstName = values.firstName;
               let lastName = values.lastName;
               let email = values.email;
               let phone = values.phone;
               let password = values.password;
+              let login = values.login;
+              let formData = new FormData();
+              formData.append('firstName', firstName);
+              formData.append('lastName', lastName);
+              formData.append('email', email);
+              formData.append('phone', phone);
+              formData.append('password', password);
+              formData.append('login', login);
+              formData.append('image', Upload.image);
               console.log(values);
               dispatcher(
-                register({
-                  firstName,
-                  lastName,
-                  email,
-                  phone,
-                  password,
+                register(
+                  formData,
                   navigate
-                })
+                )
               );
               //
             }}
@@ -109,6 +118,19 @@ const RegisterView = () => {
                     variant="body2"
                   ></Typography>
                 </Box>
+                <TextField
+                  error={Boolean(touched.login && errors.login)}
+                  fullWidth
+                  helperText={touched.login && errors.login}
+                  label="Login"
+                  margin="normal"
+                  name="login"
+                  type="text"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.login}
+                  variant="outlined"
+                />
                 <TextField
                   error={Boolean(touched.firstName && errors.firstName)}
                   fullWidth
@@ -195,9 +217,23 @@ const RegisterView = () => {
                   <FormHelperText error>{errors.policy}</FormHelperText>
                 )}
                 <Box my={2}>
+                  <ImageUploader
+                    withIcon={true}
+                    buttonText="Choisir une image"
+                    withPreview={true}
+                    onChange={(e) => {
+                      setUpload({
+                        image: e[0]
+                      });
+                    }}
+                    imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                    maxFileSize={5242880}
+                    singleImage={true}
+                  />
+                </Box>
+                <Box my={2}>
                   <Button
                     color="primary"
-                    disabled={isSubmitting}
                     fullWidth
                     size="large"
                     type="submit"
@@ -206,6 +242,7 @@ const RegisterView = () => {
                     S'inscrire
                   </Button>
                 </Box>
+
                 <Typography color="textSecondary" variant="body1">
                   Vous avez déja un compte?{' '}
                   <Link component={RouterLink} to="/" variant="h6">
