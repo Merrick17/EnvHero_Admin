@@ -2,7 +2,7 @@ import setAuthToken from '../utils/setAuthToken';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 const BASE_URL = 'https://env-hero-api.herokuapp.com/user';
-export const loadUser = () => async (dispatch) => {
+export const loadUser = () => async dispatch => {
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
@@ -24,7 +24,7 @@ export const loadUser = () => async (dispatch) => {
 
 //Register
 
-export const register = (body, navigate) => async (dispatch) => {
+export const register = (body, navigate) => async dispatch => {
   // dispatch({
   //   type: 'USER_LOADING'
   // });
@@ -35,7 +35,7 @@ export const register = (body, navigate) => async (dispatch) => {
   };
 
   try {
-    const res = await axios.post(BASE_URL + '/association/add', body, config);
+    const res = await axios.post(BASE_URL + '/add', body, config);
     dispatch({
       type: 'REGISTER_SUCCESS'
     });
@@ -46,6 +46,7 @@ export const register = (body, navigate) => async (dispatch) => {
         icon: 'success',
         confirmButtonText: 'Cool'
       });
+      navigate('/', { replace: true })
     } else {
       Swal.fire({
         title: 'Error!',
@@ -69,7 +70,7 @@ export const register = (body, navigate) => async (dispatch) => {
 
 //Login
 
-export const login = (email, password, navigate) => async (dispatch) => {
+export const login = (email, password, navigate) => async dispatch => {
   dispatch({
     type: 'USER_LOADING'
   });
@@ -99,6 +100,7 @@ export const login = (email, password, navigate) => async (dispatch) => {
     if (res.data.token) {
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('userid', res.data.user);
+      localStorage.setItem('role', res.data.role);
       navigate('/app/customers', { replace: true });
     } else {
       Swal.fire({
@@ -123,7 +125,7 @@ export const login = (email, password, navigate) => async (dispatch) => {
 
 //Logout
 
-export const logout = () => async (dispatch) => {
+export const logout = () => async dispatch => {
   dispatch({
     type: 'USER_LOADING'
   });

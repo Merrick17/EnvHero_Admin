@@ -17,7 +17,7 @@ import Page from 'src/components/Page';
 import { useDispatch } from 'react-redux';
 import { register } from '../../actions/auth.actions';
 import ImageUploader from 'react-images-upload';
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     height: '100%',
@@ -73,13 +73,14 @@ const RegisterView = () => {
                 .required('Veuillez saisir un login '),
               phone: Yup.string().required('Veuillez saisir votre téléphone')
             })}
-            onSubmit={(values) => {
+            onSubmit={values => {
               let firstName = values.firstName;
               let lastName = values.lastName;
               let email = values.email;
               let phone = values.phone;
               let password = values.password;
               let login = values.login;
+              let role = values.policy ? 'ASSOCIATION' : 'USER';
               let formData = new FormData();
               formData.append('firstName', firstName);
               formData.append('lastName', lastName);
@@ -87,14 +88,10 @@ const RegisterView = () => {
               formData.append('phone', phone);
               formData.append('password', password);
               formData.append('login', login);
+              formData.append('role',role); 
               formData.append('image', Upload.image);
               console.log(values);
-              dispatcher(
-                register(
-                  formData,
-                  navigate
-                )
-              );
+              dispatcher(register(formData, navigate));
               //
             }}
           >
@@ -201,16 +198,7 @@ const RegisterView = () => {
                     onChange={handleChange}
                   />
                   <Typography color="textSecondary" variant="body1">
-                    J'ai lu les{' '}
-                    <Link
-                      color="primary"
-                      component={RouterLink}
-                      to="#"
-                      underline="always"
-                      variant="h6"
-                    >
-                      Termes et Conditions
-                    </Link>
+                    Je suis une association
                   </Typography>
                 </Box>
                 {Boolean(touched.policy && errors.policy) && (
@@ -221,7 +209,7 @@ const RegisterView = () => {
                     withIcon={true}
                     buttonText="Choisir une image"
                     withPreview={true}
-                    onChange={(e) => {
+                    onChange={e => {
                       setUpload({
                         image: e[0]
                       });

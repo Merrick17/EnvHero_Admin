@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { useDispatch, useSelector } from 'react-redux';
-import IconButton from '@material-ui/core/IconButton';
-import { Edit, Trash } from 'react-feather';
 import {
   Avatar,
   Box,
@@ -21,9 +18,9 @@ import {
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
-import { getAllAssociations } from 'src/actions/association.action';
-
-const useStyles = makeStyles((theme) => ({
+import IconButton from '@material-ui/core/IconButton';
+import { Edit, Trash } from 'react-feather';
+const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
     marginRight: theme.spacing(2)
@@ -35,24 +32,19 @@ const Results = ({ className, customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  const dispatch = useDispatch();
-  const BASE_URL = 'https://env-hero.herokuapp.com/';
-  const state = useSelector((state) => state.associationReducer);
 
-  const handleSelectAll = (event) => {
+  const handleSelectAll = event => {
     let newSelectedCustomerIds;
 
     if (event.target.checked) {
-      newSelectedCustomerIds = customers.map((customer) => customer.id);
+      newSelectedCustomerIds = customers.map(customer => customer.id);
     } else {
       newSelectedCustomerIds = [];
     }
 
     setSelectedCustomerIds(newSelectedCustomerIds);
   };
-  useEffect(() => {
-    dispatch(getAllAssociations());
-  }, []);
+
   const handleSelectOne = (event, id) => {
     const selectedIndex = selectedCustomerIds.indexOf(id);
     let newSelectedCustomerIds = [];
@@ -80,7 +72,7 @@ const Results = ({ className, customers, ...rest }) => {
     setSelectedCustomerIds(newSelectedCustomerIds);
   };
 
-  const handleLimitChange = (event) => {
+  const handleLimitChange = event => {
     setLimit(event.target.value);
   };
 
@@ -106,19 +98,20 @@ const Results = ({ className, customers, ...rest }) => {
                     onChange={handleSelectAll}
                   /> */}
                 </TableCell>
-                <TableCell>Association</TableCell>
+                <TableCell>Nom & Prénom</TableCell>
                 <TableCell>Email</TableCell>
-                <TableCell>Emplacement</TableCell>
+                <TableCell>Adresse</TableCell>
                 <TableCell>Téléphone</TableCell>
+                <TableCell>Date Inscription</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {state.slice(0, limit).map((customer) => (
+              {customers.slice(0, limit).map(customer => (
                 <TableRow
                   hover
                   key={customer._id}
-                  selected={selectedCustomerIds.indexOf(customer._id) !== -1}
+                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
                 >
                   <TableCell padding="checkbox">
                     {/* <Checkbox
@@ -131,12 +124,12 @@ const Results = ({ className, customers, ...rest }) => {
                     <Box alignItems="center" display="flex">
                       <Avatar
                         className={classes.avatar}
-                        src={BASE_URL + customer.imageUrl}
+                        src={ customer.imageUrl}
                       >
-                        {getInitials(customer.name)}
+                        {getInitials(customer.firstName)}
                       </Avatar>
                       <Typography color="textPrimary" variant="body1">
-                        {customer.name}
+                        {customer.firstName} {customer.lastName}
                       </Typography>
                     </Box>
                   </TableCell>
@@ -144,9 +137,9 @@ const Results = ({ className, customers, ...rest }) => {
                   <TableCell>{customer.address}</TableCell>
                   <TableCell>{customer.phoneNumber}</TableCell>
                   <TableCell>
-                    <IconButton color="primary">
-                      <Edit />
-                    </IconButton>
+                    {moment(customer.createdAt).format('DD/MM/YYYY')}
+                  </TableCell>
+                  <TableCell>
                     <IconButton color="red">
                       <Trash />
                     </IconButton>

@@ -110,7 +110,7 @@ const Results = ({ className, customers, ...rest }) => {
               {customers.slice(0, limit).map((customer) => (
                 <TableRow
                   hover
-                  key={customer.id}
+                  key={customer._id}
                   selected={selectedCustomerIds.indexOf(customer.id) !== -1}
                 >
                   <TableCell padding="checkbox">

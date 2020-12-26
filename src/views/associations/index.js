@@ -4,7 +4,7 @@ import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
 import data from './data';
-
+import { useSelector } from 'react-redux';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -15,6 +15,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const AssociationsListView = () => {
+  const users = useSelector(state => state.userReducer);
   const classes = useStyles();
   const [customers] = useState(data);
 
@@ -23,7 +24,9 @@ const AssociationsListView = () => {
       <Container maxWidth={false}>
         <Toolbar />
         <Box mt={3}>
-          <Results customers={customers} />
+          <Results
+            customers={users.filter(elm => elm.role === 'ASSOCIATION')}
+          />
         </Box>
       </Container>
     </Page>
