@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
@@ -25,8 +25,10 @@ import { KeyboardDatePicker } from '@material-ui/pickers';
 import { addEventApi } from '../../actions/events.actions';
 import { Search as SearchIcon } from 'react-feather';
 import ImageUploader from 'react-images-upload';
-
-const useStyles = makeStyles((theme) => ({
+import incidentReducer from 'src/reducers/incident.reducer';
+import { useSelector } from 'react-redux';
+import { getAllDangerZone } from 'src/actions/danger.action';
+const useStyles = makeStyles(theme => ({
   root: {},
   importButton: {
     marginRight: theme.spacing(1)
@@ -52,9 +54,11 @@ const Toolbar = ({ className, ...rest }) => {
   const [emplacement, setEmplacement] = useState('');
   const dispatch = useDispatch();
   const [Upload, setUpload] = useState({ image: '' });
-  // const handleChange = (event) => {
-  //   setAge(event.target.value);
-  // };
+  const [zone, setZone] = useState('');
+  useEffect(() => {
+    dispatch(getAllDangerZone());
+  }, []);
+  const dangerzone = useSelector(({ incidentReducer }) => incidentReducer);
   const [selectedDate, setSelectedDate] = React.useState(
     new Date('2014-08-18T21:11:54')
   );
@@ -65,7 +69,7 @@ const Toolbar = ({ className, ...rest }) => {
     setOpen(false);
   };
 
-  const handleDateChange = (date) => {
+  const handleDateChange = date => {
     setSelectedDate(date);
     //setOpen(false);
   };
@@ -78,6 +82,7 @@ const Toolbar = ({ className, ...rest }) => {
     let added = localStorage.getItem('userid');
     body.append('image', Upload.image);
     body.append('addedBy', added);
+    body.append('category', zone);
     dispatch(addEventApi(body));
     handleClose();
   };
@@ -100,7 +105,7 @@ const Toolbar = ({ className, ...rest }) => {
             fullWidth
             variant="outlined"
             value={name}
-            onChange={(event) => {
+            onChange={event => {
               //console.log()
               setName(event.target.value);
             }}
@@ -114,11 +119,34 @@ const Toolbar = ({ className, ...rest }) => {
             fullWidth
             variant="outlined"
             value={desc}
-            onChange={(event) => {
+            onChange={event => {
               setDesc(event.target.value);
             }}
           />
-          <TextField
+          <FormControl variant="outlined" fullWidth>
+            <Select
+              labelId="demo-simple-select-helper-label"
+              id="demo-simple-select-helper"
+              fullWidth
+              value={zone}
+              onChange={event => {
+                setZone(event.target.value);
+              }}
+            >
+              <MenuItem value="">
+                <em>Aucune</em>
+              </MenuItem>
+              {dangerzone.map(elm => {
+                return (
+                  <MenuItem value={elm._id} key={elm._id}>
+                    {elm.desc}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+
+          {/* <TextField
             autoFocus
             margin="dense"
             id="emp"
@@ -127,10 +155,10 @@ const Toolbar = ({ className, ...rest }) => {
             fullWidth
             variant="outlined"
             value={emplacement}
-            onChange={(event) => {
+            onChange={event => {
               setEmplacement(event.target.value);
             }}
-          />
+          /> */}
 
           <KeyboardDatePicker
             margin="normal"
@@ -143,11 +171,12 @@ const Toolbar = ({ className, ...rest }) => {
               'aria-label': 'change date'
             }}
           />
+
           <ImageUploader
             withIcon={true}
             buttonText="Choisir une image"
             withPreview={true}
-            onChange={(e) => {
+            onChange={e => {
               setUpload({
                 image: e[0]
               });

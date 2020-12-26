@@ -21,9 +21,10 @@ import {
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
-import { getAllEvents } from '../../actions/events.actions';
+import { getAllEvents, deleteEvent } from '../../actions/events.actions';
+import EventListView from '.';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
     marginRight: theme.spacing(2)
@@ -35,12 +36,13 @@ const Results = ({ className, customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-  const BASE_URL = 'https://env-hero.herokuapp.com/';
-  const handleSelectAll = (event) => {
+  const dispatch = useDispatch();
+  const BASE_URL = 'https://env-hero-api.herokuapp.com/';
+  const handleSelectAll = event => {
     let newSelectedCustomerIds;
 
     if (event.target.checked) {
-      newSelectedCustomerIds = customers.map((customer) => customer.id);
+      newSelectedCustomerIds = customers.map(customer => customer.id);
     } else {
       newSelectedCustomerIds = [];
     }
@@ -75,7 +77,7 @@ const Results = ({ className, customers, ...rest }) => {
     setSelectedCustomerIds(newSelectedCustomerIds);
   };
 
-  const handleLimitChange = (event) => {
+  const handleLimitChange = event => {
     setLimit(event.target.value);
   };
 
@@ -83,7 +85,7 @@ const Results = ({ className, customers, ...rest }) => {
     setPage(newPage);
   };
   const dispatcher = useDispatch();
-  const state = useSelector((state) => state.eventReducer);
+  const state = useSelector(state => state.eventReducer);
   useEffect(() => {
     dispatcher(getAllEvents());
     console.log(state);
@@ -96,26 +98,16 @@ const Results = ({ className, customers, ...rest }) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
-                  {/* <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
-                    color="primary"
-                    indeterminate={
-                      selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < customers.length
-                    }
-                    onChange={handleSelectAll}
-                  /> */}
-                </TableCell>
+                <TableCell padding="checkbox"></TableCell>
                 <TableCell>Nom Evenements</TableCell>
                 <TableCell>Description</TableCell>
-                <TableCell>Emplacement</TableCell>
+                <TableCell>Zone de danger</TableCell>
                 <TableCell>Oragnisé Par</TableCell>
                 <TableCell>Date</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {state.slice(0, limit).map((ev) => {
+              {state.slice(0, limit).map(ev => {
                 console.log(ev);
                 return (
                   <TableRow
@@ -139,14 +131,21 @@ const Results = ({ className, customers, ...rest }) => {
                     </TableCell>
                     <TableCell>{ev.description}</TableCell>
                     <TableCell>
-                      {/* {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`} */}
+                      {ev.category.lat} {ev.category.lng}
                     </TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>
+                      {ev.addedBy.firstName} {ev.addedBy.lastName}
+                    </TableCell>
                     <TableCell>
                       <IconButton color="primary">
                         <Edit />
                       </IconButton>
-                      <IconButton color="red">
+                      <IconButton
+                        color="red"
+                        onClick={() => {
+                          dispatch(deleteEvent(ev._id));
+                        }}
+                      >
                         <Trash />
                       </IconButton>
                     </TableCell>
