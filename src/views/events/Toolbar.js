@@ -106,7 +106,6 @@ const Toolbar = ({ className, ...rest }) => {
             variant="outlined"
             value={name}
             onChange={event => {
-              //console.log()
               setName(event.target.value);
             }}
           />
@@ -131,9 +130,10 @@ const Toolbar = ({ className, ...rest }) => {
               value={zone}
               onChange={event => {
                 setZone(event.target.value);
+                console.log(zone);
               }}
             >
-              <MenuItem value="">
+              <MenuItem value="" disabled={true}>
                 <em>Aucune</em>
               </MenuItem>
               {dangerzone.map(elm => {
@@ -145,20 +145,6 @@ const Toolbar = ({ className, ...rest }) => {
               })}
             </Select>
           </FormControl>
-
-          {/* <TextField
-            autoFocus
-            margin="dense"
-            id="emp"
-            label="Emplacement"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={emplacement}
-            onChange={event => {
-              setEmplacement(event.target.value);
-            }}
-          /> */}
 
           <KeyboardDatePicker
             margin="normal"
@@ -197,9 +183,6 @@ const Toolbar = ({ className, ...rest }) => {
       </Dialog>
 
       <Box display="flex" justifyContent="flex-end">
-        {/* <Button className={classes.importButton}>
-          Import
-        </Button> */}
         <Button className={classes.exportButton}>Exporter En CSV</Button>
         <Button
           color="primary"

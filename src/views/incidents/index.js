@@ -13,7 +13,8 @@ import {
   Select,
   InputLabel,
   FormControl,
-  MenuItem
+  MenuItem,
+  DataGrid
 } from '@material-ui/core';
 import Page from 'src/components/Page';
 import MapGL, { Source, Layer, Marker } from '@urbica/react-map-gl';
@@ -209,7 +210,7 @@ const IncidentsListView = () => {
             );
           })}
         </MapGL>
-        {/* <Results customers={zones} /> */}
+        <Results customers={zones} />
       </Container>
     </Page>
   );

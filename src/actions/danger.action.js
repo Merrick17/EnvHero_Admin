@@ -19,12 +19,19 @@ export const addDangerZone = data => async dispatch => {
   console.log(result);
   dispatch(getAllDangerZone());
 };
-// export const addEventApi = (body) => async (dispatch) => {
-//   setAuthToken(localStorage.token);
-//   let result = await axios.post(BASE_URL + '/create', body);
-//   console.log(result.data);
-//   dispatch({
-//     type: 'ADD_EVENT',;
-//     payload: result.data.result
-//   });
-// };
+
+export const deleteZone = id => async dispatch => {
+  setAuthToken(localStorage.token);
+  let result = await axios.delete(BASE_URL + '/delete/' + id);
+  dispatch(getAllDangerZone());
+};
+
+export const getDangerZoneByType = data => async dispatch => {
+  setAuthToken(localStorage.token);
+  let result = await axios.get(BASE_URL + '/category/' + data);
+  console.log('Result', result.data);
+  dispatch({
+    type: 'GET_ALL_ZONE',
+    payload: result.data.message
+  });
+};
