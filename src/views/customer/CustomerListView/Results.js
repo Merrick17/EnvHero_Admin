@@ -19,8 +19,10 @@ import {
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
 import IconButton from '@material-ui/core/IconButton';
-import { Edit, Trash } from 'react-feather';
-const useStyles = makeStyles((theme) => ({
+import { Edit, Trash, XCircle } from 'react-feather';
+import { useDispatch } from 'react-redux';
+import { disableUser } from '../../../actions/user.action';
+const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
     marginRight: theme.spacing(2)
@@ -32,12 +34,13 @@ const Results = ({ className, customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+  const dispatch = useDispatch();
 
-  const handleSelectAll = (event) => {
+  const handleSelectAll = event => {
     let newSelectedCustomerIds;
 
     if (event.target.checked) {
-      newSelectedCustomerIds = customers.map((customer) => customer.id);
+      newSelectedCustomerIds = customers.map(customer => customer.id);
     } else {
       newSelectedCustomerIds = [];
     }
@@ -72,7 +75,7 @@ const Results = ({ className, customers, ...rest }) => {
     setSelectedCustomerIds(newSelectedCustomerIds);
   };
 
-  const handleLimitChange = (event) => {
+  const handleLimitChange = event => {
     setLimit(event.target.value);
   };
 
@@ -103,11 +106,12 @@ const Results = ({ className, customers, ...rest }) => {
                 <TableCell>Adresse</TableCell>
                 <TableCell>Téléphone</TableCell>
                 <TableCell>Date Inscription</TableCell>
+                <TableCell>Etats</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+              {customers.slice(0, limit).map(customer => (
                 <TableRow
                   hover
                   key={customer._id}
@@ -140,10 +144,17 @@ const Results = ({ className, customers, ...rest }) => {
                     {moment(customer.createdAt).format('DD/MM/YYYY')}
                   </TableCell>
                   <TableCell>
-
-                      <IconButton color="red">
-                        <Trash />
-                      </IconButton>
+                    {customer.enabled ? 'ACTIVE' : 'BLOQUE '}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      color="red"
+                      onClick={() => {
+                        dispatch(disableUser(customer._id));
+                      }}
+                    >
+                      <XCircle />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}

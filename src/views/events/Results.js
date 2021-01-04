@@ -118,10 +118,8 @@ const Results = ({ className, customers, ...rest }) => {
                     <TableCell padding="checkbox"></TableCell>
                     <TableCell>
                       <Box alignItems="center" display="flex">
-                        <Avatar
-                          className={classes.avatar}
-                          src={BASE_URL + ev.eventImage}
-                        >
+                        <Avatar className={classes.avatar} >
+                          <img src={BASE_URL + ev.eventImage} />
                           {/* {ev.title} */}
                         </Avatar>
                         <Typography color="textPrimary" variant="body1">
@@ -131,7 +129,7 @@ const Results = ({ className, customers, ...rest }) => {
                     </TableCell>
                     <TableCell>{ev.description}</TableCell>
                     <TableCell>
-                      {ev.category.lat} {ev.category.lng}
+                      {ev.incident.lat} {ev.incident.lng}
                     </TableCell>
                     <TableCell>
                       {ev.addedBy.firstName} {ev.addedBy.lastName}
@@ -141,7 +139,7 @@ const Results = ({ className, customers, ...rest }) => {
                         <Edit />
                       </IconButton>
                       <IconButton
-                        color="red"
+                        color="inherit"
                         onClick={() => {
                           dispatch(deleteEvent(ev._id));
                         }}

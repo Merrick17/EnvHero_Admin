@@ -22,7 +22,7 @@ import {
   Select
 } from '@material-ui/core';
 import { KeyboardDatePicker } from '@material-ui/pickers';
-import { addEventApi } from '../../actions/events.actions';
+import { addEventApi, getEventByType } from '../../actions/events.actions';
 import { Search as SearchIcon } from 'react-feather';
 import ImageUploader from 'react-images-upload';
 import incidentReducer from 'src/reducers/incident.reducer';
@@ -55,6 +55,7 @@ const Toolbar = ({ className, ...rest }) => {
   const dispatch = useDispatch();
   const [Upload, setUpload] = useState({ image: '' });
   const [zone, setZone] = useState('');
+  const [type, setType] = useState('AIR');
   useEffect(() => {
     dispatch(getAllDangerZone());
   }, []);
@@ -82,7 +83,8 @@ const Toolbar = ({ className, ...rest }) => {
     let added = localStorage.getItem('userid');
     body.append('image', Upload.image);
     body.append('addedBy', added);
-    body.append('category', zone);
+    body.append('type', type);
+    body.append('incident', zone);
     dispatch(addEventApi(body));
     handleClose();
   };
@@ -145,6 +147,25 @@ const Toolbar = ({ className, ...rest }) => {
               })}
             </Select>
           </FormControl>
+          <FormControl
+            variant="outlined"
+            fullWidth
+            style={{ marginTop: '5px' }}
+          >
+            <Select
+              labelId="demo-simple-select-helper-label"
+              id="demo-simple-select-helper"
+              fullWidth
+              value={type}
+              onChange={event => {
+                setType(event.target.value);
+              }}
+            >
+              <MenuItem value="AIR">AIR</MenuItem>
+              <MenuItem value="AIR">EAU</MenuItem>
+              <MenuItem value="AIR">TERRE</MenuItem>
+            </Select>
+          </FormControl>
 
           <KeyboardDatePicker
             margin="normal"
@@ -197,21 +218,35 @@ const Toolbar = ({ className, ...rest }) => {
       <Box mt={3}>
         <Card>
           <CardContent>
-            <Box maxWidth={500}>
-              <TextField
-                fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SvgIcon fontSize="small" color="action">
-                        <SearchIcon />
-                      </SvgIcon>
-                    </InputAdornment>
-                  )
+            <Box minWidth={500}>
+              <FormControl className={classes.formControl}>
+                <InputLabel id="demo-simple-select-label">TYPE</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={type}
+                  onChange={event => {
+                    setType(event.target.value);
+                  }}
+                  style={{
+                    minWidth: '500px'
+                  }}
+                >
+                  <MenuItem value={'AIR'}>AIR</MenuItem>
+                  <MenuItem value={'TERRE'}>TERRE</MenuItem>
+                  <MenuItem value={'EAU'}>EAU</MenuItem>
+                </Select>
+              </FormControl>
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ marginLeft: '20px', marginTop: '10px' }}
+                onClick={() => {
+                  dispatch(getEventByType(type));
                 }}
-                placeholder="Rechercher"
-                variant="outlined"
-              />
+              >
+                Chercher
+              </Button>
             </Box>
           </CardContent>
         </Card>

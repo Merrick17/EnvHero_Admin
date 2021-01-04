@@ -34,11 +34,6 @@ const user = {
 };
 
 const items = [
-  // {
-  //   href: '/app/dashboard',
-  //   icon: BarChartIcon,
-  //   title: 'Dashboard'
-  // },
   {
     href: '/app/customers',
     icon: UsersIcon,
@@ -49,6 +44,18 @@ const items = [
     icon: FlagIcon,
     title: 'Associations'
   },
+  {
+    href: '/app/events',
+    icon: EventIcon,
+    title: 'Events'
+  },
+  {
+    href: '/app/incidents',
+    icon: MapIcon,
+    title: 'Zone de Danger'
+  }
+];
+const userItems = [
   {
     href: '/app/events',
     icon: EventIcon,
@@ -98,23 +105,32 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           to="/app/account"
         />
         <Typography className={classes.name} color="textPrimary" variant="h5">
-         Admin
+          Admin
         </Typography>
         <Typography color="textSecondary" variant="body2">
-         Admin
+          Admin
         </Typography>
       </Box>
       <Divider />
       <Box p={2}>
         <List>
-          {items.map(item => (
-            <NavItem
-              href={item.href}
-              key={item.title}
-              title={item.title}
-              icon={item.icon}
-            />
-          ))}
+          {localStorage.getItem('role') == 'ADMIN'
+            ? items.map(item => (
+                <NavItem
+                  href={item.href}
+                  key={item.title}
+                  title={item.title}
+                  icon={item.icon}
+                />
+              ))
+            : userItems.map(item => (
+                <NavItem
+                  href={item.href}
+                  key={item.title}
+                  title={item.title}
+                  icon={item.icon}
+                />
+              ))}
         </List>
       </Box>
       <Box flexGrow={1} />

@@ -19,7 +19,9 @@ import {
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
 import IconButton from '@material-ui/core/IconButton';
-import { Edit, Trash } from 'react-feather';
+import { Edit, Trash, XCircle } from 'react-feather';
+import { useDispatch } from 'react-redux';
+import { disableUser } from '../../actions/user.action';
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -32,6 +34,7 @@ const Results = ({ className, customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+  const dispatch = useDispatch();
 
   const handleSelectAll = event => {
     let newSelectedCustomerIds;
@@ -103,6 +106,7 @@ const Results = ({ className, customers, ...rest }) => {
                 <TableCell>Adresse</TableCell>
                 <TableCell>Téléphone</TableCell>
                 <TableCell>Date Inscription</TableCell>
+                <TableCell>Etats</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -124,7 +128,7 @@ const Results = ({ className, customers, ...rest }) => {
                     <Box alignItems="center" display="flex">
                       <Avatar
                         className={classes.avatar}
-                        src={ customer.imageUrl}
+                        src={customer.imageUrl}
                       >
                         {getInitials(customer.firstName)}
                       </Avatar>
@@ -140,8 +144,16 @@ const Results = ({ className, customers, ...rest }) => {
                     {moment(customer.createdAt).format('DD/MM/YYYY')}
                   </TableCell>
                   <TableCell>
-                    <IconButton color="red">
-                      <Trash />
+                    {customer.enabled ? 'ACTIVE' : 'BLOQUE '}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      color="red"
+                      onClick={() => {
+                        dispatch(disableUser(customer._id));
+                      }}
+                    >
+                      <XCircle />
                     </IconButton>
                   </TableCell>
                 </TableRow>

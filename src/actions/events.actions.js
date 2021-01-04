@@ -26,3 +26,12 @@ export const deleteEvent = id => async dispatch => {
   console.log(result.data);
   dispatch(getAllEvents());
 };
+
+export const getEventByType = type => async dispatch => {
+  setAuthToken(localStorage.token);
+  let result = await axios.get(BASE_URL + '/category/' + type);
+  dispatch({
+    type: 'GET_ALL_EVENTS',
+    payload: result.data
+  });
+};

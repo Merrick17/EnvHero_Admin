@@ -33,38 +33,12 @@ const Toolbar = ({ className, ...rest }) => {
   return (
     <div className={clsx(classes.root, className)} {...rest}>
       <Box display="flex" justifyContent="flex-end">
-        {/* <Button className={classes.importButton}>
-          Import
-        </Button> */}
         <Button className={classes.exportButton}>Exporter En CSV</Button>
-        {/* <Button
-          color="primary"
-          variant="contained"
-        >
-         Ajouter un evenements
-        </Button> */}
       </Box>
       <Box mt={3}>
         <Card>
           <CardContent>
             <Box minWidth={500}>
-              {/* <TextField
-                fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SvgIcon
-                        fontSize="small"
-                        color="action"
-                      >
-                        <SearchIcon />
-                      </SvgIcon>
-                    </InputAdornment>
-                  )
-                }}
-                placeholder="Rechercher"
-                variant="outlined"
-              /> */}
               <FormControl className={classes.formControl}>
                 <InputLabel id="demo-simple-select-label">TYPE</InputLabel>
                 <Select
