@@ -64,10 +64,7 @@ const RegisterView = () => {
               password: Yup.string()
                 .max(255)
                 .required('Veuillez saisir un mot de passe '),
-              policy: Yup.boolean().oneOf(
-                [true],
-                'Vous devez accepter les termes at conditions'
-              ),
+          
               login: Yup.string()
                 .max(255)
                 .required('Veuillez saisir un login '),

@@ -118,7 +118,7 @@ const Results = ({ className, customers, ...rest }) => {
                     <TableCell padding="checkbox"></TableCell>
                     <TableCell>
                       <Box alignItems="center" display="flex">
-                        <Avatar className={classes.avatar} >
+                        <Avatar className={classes.avatar}>
                           <img src={BASE_URL + ev.eventImage} />
                           {/* {ev.title} */}
                         </Avatar>
@@ -129,7 +129,8 @@ const Results = ({ className, customers, ...rest }) => {
                     </TableCell>
                     <TableCell>{ev.description}</TableCell>
                     <TableCell>
-                      {ev.incident.lat} {ev.incident.lng}
+                      {ev.incident && ev.incident.lat}{' '}
+                      {ev.incident && ev.incident.lng}
                     </TableCell>
                     <TableCell>
                       {ev.addedBy.firstName} {ev.addedBy.lastName}
