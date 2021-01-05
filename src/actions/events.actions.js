@@ -35,3 +35,11 @@ export const getEventByType = type => async dispatch => {
     payload: result.data
   });
 };
+
+export const disableEvent = (id, value) => async dispatch => {
+  setAuthToken(localStorage.token);
+  let result = await axios.put(BASE_URL + '/enable/' + id, {
+    value: value
+  });
+  dispatch(getAllEvents());
+};

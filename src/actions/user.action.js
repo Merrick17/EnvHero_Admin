@@ -13,8 +13,16 @@ export const getAllUsers = () => async dispatch => {
   });
 };
 
-export const disableUser = id => async dispatch => {
+export const disableUser = (id, value) => async dispatch => {
   setAuthToken(localStorage.token);
-  let result = await axios.put(BASE_URL + '/disable/' + id);
+  let result = await axios.put(BASE_URL + '/disable/' + id, {
+    value: value
+  });
+  dispatch(getAllUsers());
+};
+
+export const deleteUser = id => async dispatch => {
+  setAuthToken(localStorage.token);
+  let result = await axios.delete(BASE_URL + '/' + id + '/delete');
   dispatch(getAllUsers());
 };

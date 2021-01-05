@@ -97,7 +97,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
 
   const content = (
     <Box height="100%" display="flex" flexDirection="column">
-      <Box alignItems="center" display="flex" flexDirection="column" p={2}>
+      {/* <Box alignItems="center" display="flex" flexDirection="column" p={2}>
         <Avatar
           className={classes.avatar}
           component={RouterLink}
@@ -105,12 +105,12 @@ const NavBar = ({ onMobileClose, openMobile }) => {
           to="/app/account"
         />
         <Typography className={classes.name} color="textPrimary" variant="h5">
-          Admin
+          
         </Typography>
         <Typography color="textSecondary" variant="body2">
           Admin
         </Typography>
-      </Box>
+      </Box> */}
       <Divider />
       <Box p={2}>
         <List>

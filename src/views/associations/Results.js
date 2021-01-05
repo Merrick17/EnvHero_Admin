@@ -7,7 +7,8 @@ import {
   Avatar,
   Box,
   Card,
-  Checkbox,
+  FormControlLabel,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -15,13 +16,15 @@ import {
   TablePagination,
   TableRow,
   Typography,
-  makeStyles
+  makeStyles,
+  Button
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
 import IconButton from '@material-ui/core/IconButton';
 import { Edit, Trash, XCircle } from 'react-feather';
 import { useDispatch } from 'react-redux';
-import { disableUser } from '../../actions/user.action';
+import { disableUser, deleteUser } from '../../actions/user.action';
+import { DeleteOutlineOutlined } from '@material-ui/icons';
 const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
@@ -91,15 +94,7 @@ const Results = ({ className, customers, ...rest }) => {
             <TableHead>
               <TableRow>
                 <TableCell padding="checkbox">
-                  {/* <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
-                    color="primary"
-                    indeterminate={
-                      selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < customers.length
-                    }
-                    onChange={handleSelectAll}
-                  /> */}
+            
                 </TableCell>
                 <TableCell>Nom & Prénom</TableCell>
                 <TableCell>Email</TableCell>
@@ -144,16 +139,34 @@ const Results = ({ className, customers, ...rest }) => {
                     {moment(customer.createdAt).format('DD/MM/YYYY')}
                   </TableCell>
                   <TableCell>
-                    {customer.enabled ? 'ACTIVE' : 'BLOQUE '}
+                    {customer.enabled ? (
+                      <Button
+                        color="primary"
+                        onClick={() => {
+                          dispatch(disableUser(customer._id, false));
+                        }}
+                      >
+                        Desactiver
+                      </Button>
+                    ) : (
+                      <Button
+                        color="primary"
+                        onClick={() => {
+                          dispatch(disableUser(customer._id, true));
+                        }}
+                      >
+                        Activer
+                      </Button>
+                    )}
                   </TableCell>
                   <TableCell>
                     <IconButton
                       color="red"
                       onClick={() => {
-                        dispatch(disableUser(customer._id));
+                        dispatch(deleteUser(customer._id));
                       }}
                     >
-                      <XCircle />
+                      <Trash />
                     </IconButton>
                   </TableCell>
                 </TableRow>

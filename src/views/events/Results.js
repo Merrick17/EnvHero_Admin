@@ -5,7 +5,7 @@ import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import IconButton from '@material-ui/core/IconButton';
-import { Edit, Trash } from 'react-feather';
+import { CheckCircle, Edit, Trash, XCircle } from 'react-feather';
 import {
   Avatar,
   Box,
@@ -21,7 +21,11 @@ import {
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
-import { getAllEvents, deleteEvent } from '../../actions/events.actions';
+import {
+  getAllEvents,
+  deleteEvent,
+  disableEvent
+} from '../../actions/events.actions';
 import EventListView from '.';
 
 const useStyles = makeStyles(theme => ({
@@ -102,12 +106,13 @@ const Results = ({ className, customers, ...rest }) => {
                 <TableCell>Nom Evenements</TableCell>
                 <TableCell>Description</TableCell>
                 <TableCell>Zone de danger</TableCell>
+                <TableCell>Etats</TableCell>
                 <TableCell>Oragnisé Par</TableCell>
                 <TableCell>Date</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {state.slice(0, limit).map(ev => {
+              {state.map(ev => {
                 console.log(ev);
                 return (
                   <TableRow
@@ -120,7 +125,6 @@ const Results = ({ className, customers, ...rest }) => {
                       <Box alignItems="center" display="flex">
                         <Avatar className={classes.avatar}>
                           <img src={BASE_URL + ev.eventImage} />
-                          {/* {ev.title} */}
                         </Avatar>
                         <Typography color="textPrimary" variant="body1">
                           {ev.title}
@@ -132,22 +136,52 @@ const Results = ({ className, customers, ...rest }) => {
                       {ev.incident && ev.incident.lat}{' '}
                       {ev.incident && ev.incident.lng}
                     </TableCell>
+                    <TableCell>{ev.enabled ? 'ACTIVE' : 'ANNULER'}</TableCell>
                     <TableCell>
                       {ev.addedBy.firstName} {ev.addedBy.lastName}
                     </TableCell>
-                    <TableCell>
-                      <IconButton color="primary">
-                        <Edit />
-                      </IconButton>
-                      <IconButton
-                        color="inherit"
-                        onClick={() => {
-                          dispatch(deleteEvent(ev._id));
-                        }}
-                      >
-                        <Trash />
-                      </IconButton>
-                    </TableCell>
+                    {localStorage.getItem('role') === 'ADMIN' ? (
+                      <TableCell>
+                        {ev.enabled ? (
+                          <IconButton
+                            color="primary"
+                            onClick={() => {
+                              dispatch(disableEvent(ev._id, false));
+                            }}
+                          >
+                            <XCircle />
+                          </IconButton>
+                        ) : (
+                          <IconButton
+                            color="primary"
+                            onClick={() => {
+                              dispatch(disableEvent(ev._id, true));
+                            }}
+                          >
+                            <CheckCircle />
+                          </IconButton>
+                        )}
+                        <IconButton
+                          color="inherit"
+                          onClick={() => {
+                            dispatch(deleteEvent(ev._id));
+                          }}
+                        >
+                          <Trash />
+                        </IconButton>
+                      </TableCell>
+                    ) : (
+                      <TableCell>
+                        <IconButton
+                          color="inherit"
+                          onClick={() => {
+                            dispatch(deleteEvent(ev._id));
+                          }}
+                        >
+                          <Trash />
+                        </IconButton>
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })}
