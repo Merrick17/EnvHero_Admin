@@ -19,6 +19,7 @@ import {
   IconButton,
   Icon
 } from '@material-ui/core';
+
 import { deleteZone } from '../../actions/danger.action';
 import { Edit, Trash } from 'react-feather';
 import { useDispatch } from 'react-redux';
