@@ -46,7 +46,7 @@ export const register = (body, navigate) => async dispatch => {
         icon: 'success',
         confirmButtonText: 'Cool'
       });
-      navigate('/', { replace: true })
+      navigate('/', { replace: true });
     } else {
       Swal.fire({
         title: 'Error!',
@@ -101,7 +101,11 @@ export const login = (email, password, navigate) => async dispatch => {
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('userid', res.data.user);
       localStorage.setItem('role', res.data.role);
-      navigate('/app/customers', { replace: true });
+      if (res.data.role == 'ADMIN') {
+        navigate('/app/customers', { replace: true });
+      } else {
+        navigate('/app/incidents', { replace: true });
+      }
     } else {
       Swal.fire({
         title: 'Error!',

@@ -151,10 +151,10 @@ const Results = ({ className, customers, ...rest }) => {
   };
   const dispatcher = useDispatch();
   const state = useSelector(state => state.eventReducer);
-  useEffect(() => {
-    dispatcher(getAllEvents());
-    console.log(state);
-  }, []);
+  // useEffect(() => {
+  //   dispatcher(getAllEvents());
+  //   console.log(state);
+  // }, []);
 
   return (
     <Fragment>
@@ -265,7 +265,12 @@ const Results = ({ className, customers, ...rest }) => {
           <Button onClick={handleClose} color="primary">
             Annuler
           </Button>
-          <Button onClick={editEvent(selectedEvent)} color="primary">
+          <Button
+            onClick={() => {
+              editEvent(selectedEvent);
+            }}
+            color="primary"
+          >
             Confirmer
           </Button>
         </DialogActions>

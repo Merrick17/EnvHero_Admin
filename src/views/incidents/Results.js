@@ -130,9 +130,9 @@ const Results = ({ className, customers, ...rest }) => {
                   <TableCell>{customer.lat}</TableCell>
                   <TableCell>{customer.type}</TableCell>
                   <TableCell>
-                    <IconButton color="primary">
+                    {/* <IconButton color="primary">
                       <Edit />
-                    </IconButton>
+                    </IconButton> */}
                     <IconButton
                       color="red"
                       onClick={() => {
