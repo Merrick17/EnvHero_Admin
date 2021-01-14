@@ -2,7 +2,7 @@ import setAuthToken from '../utils/setAuthToken';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 const BASE_URL = 'https://env-hero-api.herokuapp.com/events';
-
+//const BASE_URL = 'http://localhost:4000/events';
 export const getAllEvents = () => async dispatch => {
   setAuthToken(localStorage.token);
   let result = await axios.get(BASE_URL);
@@ -37,9 +37,7 @@ export const getEventByType = type => async dispatch => {
 };
 export const updateEvent = (id, value) => async dispatch => {
   setAuthToken(localStorage.token);
-  let result = await axios.put(BASE_URL + '/' + id + '/update/', {
-    value: value
-  });
+  let result = await axios.put(BASE_URL + '/' + id + '/update/', value);
   dispatch(getAllEvents());
 };
 

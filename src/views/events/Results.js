@@ -89,17 +89,17 @@ const Results = ({ className, customers, ...rest }) => {
     //setOpen(false);
   };
   const editEvent = i => {
-    let body = new FormData();
-    body.append('title', name);
-    body.append('desc', desc);
-    body.append('dateEvent', selectedDate.toDateString());
-    body.append('emplacement', emplacement);
+    let updateData = new FormData();
+    updateData.append('title', name);
+    updateData.append('desc', desc);
+    updateData.append('dateEvent', selectedDate.toDateString());
+    updateData.append('emplacement', emplacement);
     let added = localStorage.getItem('userid');
-    body.append('image', Upload.image);
-    body.append('addedBy', added);
-    body.append('type', type);
-    body.append('incident', zone);
-    dispatch(updateEvent(i,body));
+    updateData.append('image', Upload.image);
+    updateData.append('addedBy', added);
+    updateData.append('type', type);
+    updateData.append('incident', zone);
+    dispatch(updateEvent(i,updateData));
     handleClose();
   };
   const BASE_URL = 'https://env-hero-api.herokuapp.com/';

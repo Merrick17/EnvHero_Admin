@@ -28,6 +28,7 @@ import ImageUploader from 'react-images-upload';
 import incidentReducer from 'src/reducers/incident.reducer';
 import { useSelector } from 'react-redux';
 import { getAllDangerZone } from 'src/actions/danger.action';
+import { getAllEvents } from '../../actions/events.actions';
 const useStyles = makeStyles(theme => ({
   root: {},
   importButton: {
@@ -232,6 +233,7 @@ const Toolbar = ({ className, ...rest }) => {
                     minWidth: '500px'
                   }}
                 >
+                  <MenuItem value="TOUS">TOUS</MenuItem>
                   <MenuItem value={'AIR'}>AIR</MenuItem>
                   <MenuItem value={'TERRE'}>TERRE</MenuItem>
                   <MenuItem value={'EAU'}>EAU</MenuItem>
@@ -242,7 +244,11 @@ const Toolbar = ({ className, ...rest }) => {
                 color="primary"
                 style={{ marginLeft: '20px', marginTop: '10px' }}
                 onClick={() => {
-                  dispatch(getEventByType(type));
+                  if (type == 'TOUS') {
+                    dispatch(getEventByType(type));
+                  } else {
+                    dispatch(getAllEvents());
+                  }
                 }}
               >
                 Chercher
