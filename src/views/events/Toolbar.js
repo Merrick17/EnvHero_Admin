@@ -23,12 +23,11 @@ import {
 } from '@material-ui/core';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 import { addEventApi, getEventByType } from '../../actions/events.actions';
-import { Search as SearchIcon } from 'react-feather';
 import ImageUploader from 'react-images-upload';
-import incidentReducer from 'src/reducers/incident.reducer';
 import { useSelector } from 'react-redux';
 import { getAllDangerZone } from 'src/actions/danger.action';
 import { getAllEvents } from '../../actions/events.actions';
+import swal from 'sweetalert2';
 const useStyles = makeStyles(theme => ({
   root: {},
   importButton: {
@@ -76,17 +75,30 @@ const Toolbar = ({ className, ...rest }) => {
     //setOpen(false);
   };
   const addEvent = () => {
-    let body = new FormData();
-    body.append('title', name);
-    body.append('desc', desc);
-    body.append('dateEvent', selectedDate.toDateString());
-    body.append('emplacement', emplacement);
-    let added = localStorage.getItem('userid');
-    body.append('image', Upload.image);
-    body.append('addedBy', added);
-    body.append('type', type);
-    body.append('incident', zone);
-    dispatch(addEventApi(body));
+    if (
+      name != '' &&
+      desc != '' &&
+      type != '' &&
+      zone != ''
+    ) {
+      let body = new FormData();
+      body.append('title', name);
+      body.append('desc', desc);
+      body.append('dateEvent', selectedDate.toDateString());
+      // body.append('emplacement', emplacement);
+      let added = localStorage.getItem('userid');
+      body.append('image', Upload.image);
+      body.append('addedBy', added);
+      body.append('type', type);
+      body.append('incident', zone);
+      dispatch(addEventApi(body));
+    } else {
+      swal.fire({
+        title: 'erreur',
+        text: 'Veuillez Remplir les champs !'
+      });
+    }
+
     handleClose();
   };
   return (
@@ -244,7 +256,8 @@ const Toolbar = ({ className, ...rest }) => {
                 color="primary"
                 style={{ marginLeft: '20px', marginTop: '10px' }}
                 onClick={() => {
-                  if (type == 'TOUS') {
+                  console.log(type); 
+                  if (type != 'TOUS') {
                     dispatch(getEventByType(type));
                   } else {
                     dispatch(getAllEvents());

@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
 import { useState } from 'react';
-import { getDangerZoneByType } from 'src/actions/danger.action';
+import { getDangerZoneByType ,getAllDangerZone} from 'src/actions/danger.action';
 import { useDispatch } from 'react-redux';
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -52,6 +52,7 @@ const Toolbar = ({ className, ...rest }) => {
                     minWidth: '500px'
                   }}
                 >
+                  <MenuItem value={'TOUS'}>AIR</MenuItem>
                   <MenuItem value={'AIR'}>AIR</MenuItem>
                   <MenuItem value={'TERRE'}>TERRE</MenuItem>
                   <MenuItem value={'EAU'}>EAU</MenuItem>
@@ -62,7 +63,11 @@ const Toolbar = ({ className, ...rest }) => {
                 color="primary"
                 style={{ marginLeft: '20px', marginTop: '10px' }}
                 onClick={() => {
-                  dispatch(getDangerZoneByType(type));
+                  if (type != 'TOUS') {
+                    dispatch(getDangerZoneByType(type));
+                  } else {
+                    dispatch(getAllDangerZone());
+                  }
                 }}
               >
                 Chercher
