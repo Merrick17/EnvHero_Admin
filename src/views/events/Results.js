@@ -99,7 +99,7 @@ const Results = ({ className, customers, ...rest }) => {
     body.append('addedBy', added);
     body.append('type', type);
     body.append('incident', zone);
-    dispatch(updateEvent(body));
+    dispatch(updateEvent(i,body));
     handleClose();
   };
   const BASE_URL = 'https://env-hero-api.herokuapp.com/';

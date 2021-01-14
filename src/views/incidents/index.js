@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { addDangerZone, getAllDangerZone } from 'src/actions/danger.action';
 import Results from './Results';
+import swal from 'sweetalert2';
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -73,15 +74,24 @@ const IncidentsListView = () => {
   };
   const DialogComp = ({ open, handleClose }) => {
     const confirm = () => {
-      let formData = new FormData();
-      formData.append('type', type);
-      formData.append('lat', lat);
-      formData.append('lng', long);
-      formData.append('image', Upload.image);
-      formData.append('user', localStorage.userid);
-      formData.append('desc', desc);
-      dispatch(addDangerZone(formData));
-      handleClose();
+      if (desc != '' && Upload.image != '') {
+        let formData = new FormData();
+        formData.append('type', type);
+        formData.append('lat', lat);
+        formData.append('lng', long);
+        formData.append('image', Upload.image);
+        formData.append('user', localStorage.userid);
+        formData.append('desc', desc);
+        dispatch(addDangerZone(formData));
+        handleClose();
+       
+      } else {
+        handleClose();
+        swal.fire({
+          title: 'error',
+          text: 'Veuillez remplir tous les champs ! '
+        });
+      }
     };
     return (
       <Dialog

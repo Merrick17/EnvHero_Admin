@@ -37,7 +37,7 @@ export const getEventByType = type => async dispatch => {
 };
 export const updateEvent = (id, value) => async dispatch => {
   setAuthToken(localStorage.token);
-  let result = await axios.put(BASE_URL + id + '/' + '/update/', {
+  let result = await axios.put(BASE_URL + '/' + id + '/update/', {
     value: value
   });
   dispatch(getAllEvents());
